@@ -22,16 +22,6 @@ export default function Navbar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="primary">
         <Toolbar>
-          <IconButton
-            onClick={() => toggleDrawer(true)}
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
           <Typography
             variant="h6"
             component="div"
@@ -40,19 +30,16 @@ export default function Navbar() {
           >
             eightman
           </Typography>
-          <Link href="/auth">
-            <Avatar
-              alt="avatar"
-              src=""
-              sx={{
-                width: 24,
-                height: 24,
-                color: "black",
-                bgcolor: "white",
-                cursor: "pointer",
-              }}
-            />
-          </Link>
+          <IconButton
+            onClick={() => toggleDrawer(true)}
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ padding: 0 }}
+          >
+            <MenuIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer toggleDrawer={toggleDrawer} left={left} />
