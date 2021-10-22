@@ -3,14 +3,17 @@ import Navbar from "../components/Navbar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme({
+  typography: {
+    fontFamily: "Montserrat Alternates sans-serif",
+  },
   palette: {
     primary: {
       main: "#111f4d",
       contrastText: "#fff",
     },
     secondary: {
-      main: "#086972",
-      contrastText: "#fff",
+      main: "#f2f4f7",
+      contrastText: "#757575",
     },
     danger: {
       main: "#e41749",

@@ -1,0 +1,8 @@
+.imgUploadBox {
+  height: 130px;
+  aspect-ratio: 16 / 9;
+  background-color: #f2f4f7;
+  border: 2px dashed #757575;
+  font-size: 20px;
+  margin: 8px 0;
+}
