@@ -14,32 +14,24 @@ export default class ControlledEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty(),
+      server: process.env.server,
       images: [],
     };
   }
 
   onEditorStateChange = (editorState) => {
-    this.setState({
-      editorState,
-    });
+    this.props.onEditorChange(editorState);
   };
 
   imageUpload = async (e) => {
     try {
       const formData = new FormData();
       formData.append("file", e);
-      const { data } = await axios.post(
-        "http://localhost:5000/image",
-        formData
-      );
+      const { data } = await axios.post(`${this.state.server}/image`, formData);
       this.setState({
-        images: [
-          ...this.state.images,
-          `http://localhost:5000/${data.imageUrl}`,
-        ],
+        images: [...this.state.images, `${this.state.server}/${data.imageUrl}`],
       });
-      return { data: { link: `http://localhost:5000/${data.imageUrl}` } };
+      return { data: { link: `${this.state.server}/${data.imageUrl}` } };
     } catch (err) {
       console.log(err);
     }
@@ -47,7 +39,7 @@ export default class ControlledEditor extends Component {
 
   clickHandler = () => {
     const currentContentState = convertToRaw(
-      this.state.editorState.getCurrentContent()
+      this.props.editorState.getCurrentContent()
     );
 
     const images = [];
@@ -63,19 +55,24 @@ export default class ControlledEditor extends Component {
     let j = 0;
     while (this.state.images[j]) {
       if (!images.includes(this.state.images[j])) {
-        axios.delete(this.state.images[j]).then((result) => {});
+        axios
+          .delete(this.state.images[j])
+          .then((result) => {})
+          .catch((err) => console.log(err));
       }
       j++;
     }
-    this.setState({ images: images });
   };
 
   render() {
-    const { editorState } = this.state;
+    const { editorState } = this.props;
+    this.props.loading && this.clickHandler();
+
     return (
       <div>
         <Editor
           editorState={editorState}
+          toolbarClassName={styles.toolbar}
           wrapperClassName={styles.wrapper}
           editorClassName={styles.editor}
           onEditorStateChange={this.onEditorStateChange}

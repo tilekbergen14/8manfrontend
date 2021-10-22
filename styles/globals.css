@@ -9,7 +9,8 @@ body {
   font-size: 18px;
 }
 
-input {
+input,
+button {
   font-family: "Montserrat Alternates", sans-serif !important;
 }
 a {
@@ -47,6 +48,9 @@ figure {
 
 .align-center {
   align-items: center;
+}
+.space-between {
+  justify-content: space-between;
 }
 .justify-center {
   justify-content: center;

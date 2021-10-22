@@ -1,9 +1,20 @@
 .wrapper {
   margin: 24px 0;
   box-shadow: 2px 2px 4px #757575;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: scroll;
 }
 .editor {
   background-color: #fff;
   padding: 8px;
   font-size: 20px;
+  line-height: 1.5;
+  min-height: 400px;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }

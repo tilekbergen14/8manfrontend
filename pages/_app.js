@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import "../styles/prism.css";
 import Navbar from "../components/Navbar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
@@ -16,7 +17,11 @@ const theme = createTheme({
       contrastText: "#757575",
     },
     danger: {
-      main: "#e41749",
+      main: "#A2416B",
+      contrastText: "#fff",
+    },
+    success: {
+      main: "#406343",
       contrastText: "#fff",
     },
   },
