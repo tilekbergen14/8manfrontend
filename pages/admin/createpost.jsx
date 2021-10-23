@@ -4,10 +4,13 @@ import TextField from "@mui/material/TextField";
 import styles from "../../styles/CreatePost.module.css";
 import Button from "@mui/material/Button";
 import { EditorState } from "draft-js";
+import Image from "next/image";
+import axios from "axios";
 
 export default function createpost(props) {
   const imageInput = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [base64img, setBase64img] = useState("");
   const [info, setInfo] = useState({
     title: "",
     tags: "",
@@ -18,17 +21,55 @@ export default function createpost(props) {
 
   const handleChange = (e) => {
     if (e.target) {
-      setInfo({
-        ...info,
-        [e.target.name]: e.target.value,
-      });
+      if (e.target.name === "imgUrl") {
+        const img = e.target.files[0];
+        const type = e.target.files[0].type;
+        if (
+          type === "image/jpg" ||
+          type === "image/png" ||
+          type === "image/jpeg" ||
+          type === "image/jfif"
+        ) {
+          const formData = new FormData();
+          formData.append("file", img);
+          setInfo({
+            ...info,
+            [e.target.name]: formData,
+          });
+          var reader = new FileReader();
+          reader.onloadend = function () {
+            setBase64img(reader.result);
+          };
+          reader.readAsDataURL(img);
+        }
+      } else {
+        setInfo({
+          ...info,
+          [e.target.name]: e.target.value,
+        });
+      }
     } else {
       setInfo({ ...info, body: e });
     }
   };
 
-  const createPost = () => {
-    setLoading(true);
+  const createPost = async () => {
+    try {
+      setLoading(true);
+      const imgresult = await axios.post(
+        `${process.env.server}/image`,
+        info.imgUrl
+      );
+      const result = await axios.post(`${process.env.server}/post`, {
+        ...info,
+        imgUrl: imgresult.data.imageUrl,
+      });
+      if (result) {
+        setLoading(false);
+      }
+    } catch (err) {
+      console.log(err.response ? err.response.data.message : err);
+    }
   };
 
   return (
@@ -38,7 +79,8 @@ export default function createpost(props) {
         onChange={handleChange}
         type="file"
         ref={imageInput}
-        className="d-none "
+        className="d-none"
+        accept="image/png, .jpeg, .jpg, .jfif"
       />
       <TextField
         fullWidth
@@ -56,7 +98,11 @@ export default function createpost(props) {
           }}
           className={`c-pointer ${styles.imgUploadBox} flex justify-center align-center`}
         >
-          Choose image
+          {base64img !== "" ? (
+            <Image src={base64img} layout="fill" />
+          ) : (
+            "Choose image"
+          )}
         </div>
         <div style={{ width: "100%", marginLeft: "16px" }}>
           <TextField

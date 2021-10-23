@@ -27,6 +27,7 @@ export default class ControlledEditor extends Component {
     try {
       const formData = new FormData();
       formData.append("file", e);
+      console.log(formData);
       const { data } = await axios.post(`${this.state.server}/image`, formData);
       this.setState({
         images: [...this.state.images, `${this.state.server}/${data.imageUrl}`],
