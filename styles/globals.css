@@ -62,7 +62,11 @@ figure {
 .d-none {
   display: none;
 }
-
+.toast {
+  display: flex;
+  width: 100%;
+  background-color: #e41749;
+}
 /**************editor-styles******************/
 .rdw-image-modal-upload-option-label {
   word-wrap: anywhere;

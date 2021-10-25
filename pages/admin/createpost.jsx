@@ -6,11 +6,18 @@ import Button from "@mui/material/Button";
 import { EditorState } from "draft-js";
 import Image from "next/image";
 import axios from "axios";
+import Backdrop from "../../components/Backdrop";
+import Snackbar from "../../components/Snackbar";
+import { useRouter } from "next/router";
 
 export default function createpost(props) {
   const imageInput = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [postCreated, setPostCreated] = useState(false);
   const [base64img, setBase64img] = useState("");
+  const [error, setError] = useState({
+    titleErr: null,
+  });
   const [info, setInfo] = useState({
     title: "",
     tags: "",
@@ -18,6 +25,7 @@ export default function createpost(props) {
     imgUrl: "",
     body: EditorState.createEmpty(),
   });
+  const router = useRouter();
 
   const handleChange = (e) => {
     if (e.target) {
@@ -55,20 +63,32 @@ export default function createpost(props) {
 
   const createPost = async () => {
     try {
+      if (info.title === "")
+        return setError({ ...error, titleErr: "Title is required!" });
       setLoading(true);
-      const imgresult = await axios.post(
-        `${process.env.server}/image`,
-        info.imgUrl
-      );
-      const result = await axios.post(`${process.env.server}/post`, {
-        ...info,
-        imgUrl: imgresult.data.imageUrl,
-      });
-      if (result) {
-        setLoading(false);
+      let result;
+      if (info.imgUrl !== "") {
+        const imgresult = await axios.post(
+          `${process.env.server}/image`,
+          info.imgUrl
+        );
+        result = await axios.post(`${process.env.server}/post`, {
+          ...info,
+          imgUrl: imgresult.data.imageUrl ? imgresult.data.imageUrl : "",
+        });
+      } else {
+        result = await axios.post(`${process.env.server}/post`, info);
       }
+      result &&
+        setLoading(false) &
+          setError({ ...error, titleErr: null }) &
+          setPostCreated(true) &
+          setTimeout(() => {
+            router.push("/posts/");
+          }, 3000);
     } catch (err) {
-      console.log(err.response ? err.response.data.message : err);
+      setLoading(false);
+      console.log(err.message);
     }
   };
 
@@ -89,6 +109,8 @@ export default function createpost(props) {
         variant="outlined"
         margin="dense"
         name="title"
+        error={error.titleErr ? true : false}
+        helperText={error.titleErr && error.titleErr}
         onChange={handleChange}
       />
       <div className="flex">
@@ -147,6 +169,10 @@ export default function createpost(props) {
           Create blog
         </Button>
       </div>
+      {loading && <Backdrop loading={loading} />}
+      {postCreated && (
+        <Snackbar open={postCreated} setPostCreated={setPostCreated} />
+      )}
     </div>
   );
 }
