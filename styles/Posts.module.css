@@ -2,7 +2,7 @@
   padding: 24px;
   display: grid;
   grid-template-columns: 0.3fr 0.6fr 0.3fr;
-  grid-gap: 8px;
+  grid-gap: 12px;
   background-color: #eeeeee;
   min-height: 100vh;
 }
@@ -11,10 +11,17 @@
   height: 400px;
 }
 .second {
+  display: grid;
+  height: max-content;
+  grid-gap: 8px;
 }
 .third {
   background-color: rgb(233, 223, 223);
   height: 400px;
+}
+.title {
+  margin: 0;
+  font-weight: 400;
 }
 
 @media screen and (max-width: 1000px) {

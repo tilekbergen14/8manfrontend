@@ -19,8 +19,8 @@ export default function Navbar() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" color="primary">
+    <Box sx={{ flexGrow: 1 }} className={styles.stick}>
+      <AppBar position="sticky" color="primary">
         <Toolbar className={styles.navbar}>
           <Typography
             variant="h6"

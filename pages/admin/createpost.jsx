@@ -99,7 +99,6 @@ export default function createpost(props) {
           },
         });
       }
-      console.log(result);
       result &&
         setLoading(false) &
           setError(null) &

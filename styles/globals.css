@@ -76,5 +76,10 @@ figure {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-
+/******drawer*******/
+@media screen and (max-width: 600px) {
+  .css-4t3x6l-MuiPaper-root-MuiDrawer-paper {
+    width: 80%;
+  }
+}
 /*********prismjs*********/

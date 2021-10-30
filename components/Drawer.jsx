@@ -60,8 +60,18 @@ export default function TemporaryDrawer({ toggleDrawer, left }) {
           </ListItem>
         </Link>
         <ListItem button key="aboutus">
-          <Button variant="contained" color="danger" onClick={logout}>
-            Log out
+          <Button
+            variant="contained"
+            color={user ? "danger" : "success"}
+            onClick={
+              user
+                ? logout
+                : () => {
+                    router.push("/auth");
+                  }
+            }
+          >
+            {user ? "Log out" : "Sign up"}
           </Button>
         </ListItem>
       </List>

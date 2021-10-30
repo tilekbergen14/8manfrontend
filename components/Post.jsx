@@ -1,11 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../styles/Post.module.css";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { Button } from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import axios from "axios";
 
 export default function Post({ post }) {
+  const [liked, setLiked] = useState(post.userLiked ? post.userLiked : false);
+  const [likes, setLikes] = useState(post.likes ? post.likes : 0);
+
+  const handleLikes = () => {
+    setLiked((liked) => !liked);
+    if (liked) {
+      setLikes((likes) => likes - 1);
+    } else {
+      setLikes((likes) => likes + 1);
+    }
+    const user = JSON.parse(localStorage.getItem("user"));
+    user.token &&
+      axios
+        .post(
+          `${process.env.server}/post/like`,
+          { id: post.id },
+          {
+            headers: {
+              authorization: "Bearer " + user.token,
+            },
+          }
+        )
+        .then((result) => console.log(result))
+        .catch((err) => console.log(err.response ? err.response.data : err));
+  };
+  const date = new Date(post.createdAt);
   return (
     <div className={styles.post}>
       <div className={styles.header}>
@@ -16,11 +43,15 @@ export default function Post({ post }) {
         />
         <div>
           <p className={styles.name}>{post.author}</p>
-          <p className={styles.createdAt}>1 year ago</p>
+          <p className={styles.createdAt}>
+            {date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()}
+          </p>
         </div>
       </div>
       <div className={styles.body}>
-        <h2 className={styles.title}>{post.title}</h2>
+        <Link href={`/posts/${post.id}`}>
+          <h2 className={styles.title}>{post.title}</h2>
+        </Link>
         <div className={styles.tags}>
           {post.tags.map((tag, index) => (
             <Link key={index} href={tag}>
@@ -30,16 +61,31 @@ export default function Post({ post }) {
         </div>
         <div className={styles.footer}>
           <div className={styles.likes}>
-            <FavoriteBorderIcon color="danger" className="c-pointer" />
-            <p style={{ marginLeft: "8px" }}>23 likes</p>
+            {liked ? (
+              <FavoriteIcon
+                color="danger"
+                className="c-pointer"
+                fontSize="small"
+                sx={{ marginRight: "4px" }}
+                onClick={handleLikes}
+              />
+            ) : (
+              <FavoriteBorderIcon
+                color="danger"
+                className="c-pointer"
+                fontSize="small"
+                sx={{ marginRight: "4px" }}
+                onClick={handleLikes}
+              />
+            )}
+            <p className={styles.smallText}>
+              {likes} {likes === 0 || likes === 1 ? "like" : "likes"}
+            </p>
           </div>
-          <Button
-            color="success"
-            variant="contained"
-            sx={{ textTransform: "lowercase" }}
-          >
-            Save
-          </Button>
+          <p className={styles.smallText}>
+            <span className={styles.successText}>Readtime: </span>
+            {post.readtime}
+          </p>
         </div>
       </div>
     </div>

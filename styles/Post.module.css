@@ -1,6 +1,7 @@
 .post {
   background-color: #fff;
   padding: 16px;
+  border-radius: 4px;
 }
 .header {
   display: flex;
@@ -18,8 +19,10 @@
 }
 .tags {
   display: flex;
+  flex-wrap: wrap;
 }
 .tag {
+  font-size: 14px;
   margin-right: 8px;
   color: #798777;
   cursor: pointer;
@@ -40,5 +43,20 @@
 .likes {
   display: flex;
   align-items: center;
+}
+
+.smallText {
   font-size: 15px;
+  color: #111f4d;
+  margin: 0;
+}
+
+.successText {
+  color: #406343;
+}
+
+@media screen and (max-width: 600px) {
+  .title {
+    font-size: 24px;
+  }
 }
