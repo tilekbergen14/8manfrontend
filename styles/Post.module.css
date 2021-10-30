@@ -1,0 +1,44 @@
+.post {
+  background-color: #fff;
+  padding: 16px;
+}
+.header {
+  display: flex;
+}
+.name,
+.createdAt {
+  margin: 0;
+}
+.createdAt {
+  font-size: 14px;
+  color: #798777;
+}
+.avatar {
+  margin-right: 8px;
+}
+.tags {
+  display: flex;
+}
+.tag {
+  margin-right: 8px;
+  color: #798777;
+  cursor: pointer;
+  margin-top: 0;
+}
+.tag:hover {
+  color: #111f4d;
+}
+.title {
+  color: #111f4d;
+  cursor: pointer;
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.likes {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+}

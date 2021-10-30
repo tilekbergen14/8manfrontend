@@ -8,7 +8,9 @@ body {
   font-family: "Montserrat Alternates", sans-serif;
   font-size: 18px;
 }
-
+* {
+  font-family: "Montserrat Alternates", sans-serif;
+}
 input,
 button {
   font-family: "Montserrat Alternates", sans-serif !important;

@@ -1,0 +1,9 @@
+.admin {
+  padding: 24px;
+}
+
+@media screen and (max-width: 900px) {
+  .admin {
+    padding: 8px;
+  }
+}

@@ -21,7 +21,7 @@ export default function Navbar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="primary">
-        <Toolbar>
+        <Toolbar className={styles.navbar}>
           <Typography
             variant="h6"
             component="div"

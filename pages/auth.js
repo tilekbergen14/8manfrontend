@@ -48,7 +48,7 @@ export default function auth() {
           emailOrUsername: userData.username,
           password: userData.password,
         };
-        const result = await axios.post("http://localhost:5000/login", {
+        const result = await axios.post(`${process.env.server}/user/login`, {
           ...initialData,
         });
         setLoading(false);
@@ -58,7 +58,7 @@ export default function auth() {
         router.push("/");
       }
       if (userData.password === userData.password2) {
-        const result = await axios.post("http://localhost:5000/register", {
+        const result = await axios.post(`${process.env.server}/user/register`, {
           ...userData,
         });
         if (result) {
@@ -71,12 +71,20 @@ export default function auth() {
         setLoading(false);
       }
     } catch (err) {
-      setError(err.response ? err.response.data : err.message);
+      setError(
+        err.response ? err.response.data : "Please try again after some time!"
+      );
       setLoading(false);
     }
   };
+  let user = null;
+  if (typeof window !== "undefined") {
+    user = localStorage.getItem("user");
+    user && router.push("/");
+  }
   return (
     <div>
+      {" "}
       <Grid
         container
         sx={{
@@ -114,7 +122,8 @@ export default function auth() {
                 required
                 type="email"
                 variant="outlined"
-                color="secondary"
+                autoComplete="off"
+                color="primary"
                 margin="dense"
                 onChange={(e) =>
                   setUserData({ ...userData, email: e.target.value })
@@ -127,7 +136,8 @@ export default function auth() {
               required
               label={signin ? "Username or email" : "Username"}
               variant="outlined"
-              color="secondary"
+              color="primary"
+              autoComplete="off"
               margin="dense"
               onChange={(e) =>
                 setUserData({ ...userData, username: e.target.value })
@@ -141,7 +151,7 @@ export default function auth() {
               onChange={(e) =>
                 setUserData({ ...userData, password: e.target.value })
               }
-              color="secondary"
+              color="primary"
               margin="dense"
               type={visibility.password1 ? "password" : "text"}
               InputProps={{
@@ -168,7 +178,7 @@ export default function auth() {
                 id="password2"
                 label="Confirm Password"
                 variant="outlined"
-                color="secondary"
+                color="primary"
                 type={visibility.password2 ? "password" : "text"}
                 margin="dense"
                 onChange={(e) =>
@@ -197,7 +207,7 @@ export default function auth() {
             <Button
               type="submit"
               variant="contained"
-              color="secondary"
+              color="success"
               disabled={loading ? true : false}
               sx={{ color: "white", marginTop: "1rem" }}
             >

@@ -1,0 +1,35 @@
+.postsPage {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 0.3fr 0.6fr 0.3fr;
+  grid-gap: 8px;
+  background-color: #eeeeee;
+  min-height: 100vh;
+}
+.first {
+  background-color: rgb(233, 227, 227);
+  height: 400px;
+}
+.second {
+}
+.third {
+  background-color: rgb(233, 223, 223);
+  height: 400px;
+}
+
+@media screen and (max-width: 1000px) {
+  .postsPage {
+    grid-template-columns: 0.3fr 0.9fr;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .postsPage {
+    padding: 8px;
+    grid-template-columns: 1fr;
+  }
+  .first,
+  .third {
+    display: none;
+  }
+}

@@ -15,9 +15,7 @@ export default function createpost(props) {
   const [loading, setLoading] = useState(false);
   const [postCreated, setPostCreated] = useState(false);
   const [base64img, setBase64img] = useState("");
-  const [error, setError] = useState({
-    titleErr: null,
-  });
+  const [error, setError] = useState(null);
   const [info, setInfo] = useState({
     title: "",
     tags: "",
@@ -60,11 +58,21 @@ export default function createpost(props) {
       setInfo({ ...info, body: e });
     }
   };
-
+  let user,
+    isAdmin = false;
+  if (typeof window !== "undefined") {
+    user = localStorage.getItem("user");
+    if (user) {
+      let role = JSON.parse(user).role;
+      user = JSON.parse(user);
+      role === "admin" ? (isAdmin = true) : router.push("/");
+    } else {
+      router.push("/auth");
+    }
+  }
   const createPost = async () => {
     try {
-      if (info.title === "")
-        return setError({ ...error, titleErr: "Title is required!" });
+      if (info.title === "") return setError("Title is required!");
       setLoading(true);
       let result;
       if (info.imgUrl !== "") {
@@ -72,23 +80,46 @@ export default function createpost(props) {
           `${process.env.server}/image`,
           info.imgUrl
         );
-        result = await axios.post(`${process.env.server}/post`, {
-          ...info,
-          imgUrl: imgresult.data.imageUrl ? imgresult.data.imageUrl : "",
-        });
+        result = await axios.post(
+          `${process.env.server}/post`,
+          {
+            ...info,
+            imgUrl: imgresult.data.imageUrl ? imgresult.data.imageUrl : "",
+          },
+          {
+            headers: {
+              authorization: "Bearer " + user.token,
+            },
+          }
+        );
       } else {
-        result = await axios.post(`${process.env.server}/post`, info);
+        result = await axios.post(`${process.env.server}/post`, info, {
+          headers: {
+            authorization: "Bearer " + user.token,
+          },
+        });
       }
+      console.log(result);
       result &&
         setLoading(false) &
-          setError({ ...error, titleErr: null }) &
+          setError(null) &
           setPostCreated(true) &
           setTimeout(() => {
             router.push("/posts/");
           }, 3000);
     } catch (err) {
       setLoading(false);
-      console.log(err.message);
+      setError(
+        err.response
+          ? err.response.data
+          : "Something went wrong, please try again!"
+      );
+      if (err.response) {
+        if (err.response.data === "jwt expired") {
+          localStorage.clear();
+          router.push("/");
+        }
+      }
     }
   };
 
@@ -109,8 +140,6 @@ export default function createpost(props) {
         variant="outlined"
         margin="dense"
         name="title"
-        error={error.titleErr ? true : false}
-        helperText={error.titleErr && error.titleErr}
         onChange={handleChange}
       />
       <div className="flex">
@@ -171,7 +200,20 @@ export default function createpost(props) {
       </div>
       {loading && <Backdrop loading={loading} />}
       {postCreated && (
-        <Snackbar open={postCreated} setPostCreated={setPostCreated} />
+        <Snackbar
+          open={postCreated}
+          setPostCreated={setPostCreated}
+          message="Post created succesfully!"
+          color="success"
+        />
+      )}
+      {error && (
+        <Snackbar
+          open={error && true}
+          setError={setError}
+          message={error}
+          color="error"
+        />
       )}
     </div>
   );

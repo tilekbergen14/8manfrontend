@@ -4,3 +4,9 @@
   font-family: "Dancing Script", cursive;
   font-size: 32px;
 }
+
+@media screen and (max-width: 900px) {
+  .navbar {
+    padding: 8px !important;
+  }
+}

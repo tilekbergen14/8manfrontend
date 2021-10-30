@@ -1,0 +1,9 @@
+.mepage {
+  padding: 24px;
+}
+
+@media screen and (max-width: 900px) {
+  .mepage {
+    padding: 8px;
+  }
+}
