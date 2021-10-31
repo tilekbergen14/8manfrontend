@@ -26,20 +26,44 @@ export default function Navbar() {
             variant="h6"
             component="div"
             sx={{ flexGrow: 1, marginBottom: 1 }}
-            className={styles.logo}
           >
-            eightman
+            <span className={`${styles.logo} c-pointer`}>eightman</span>
           </Typography>
-          <IconButton
-            onClick={() => toggleDrawer(true)}
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ padding: 0 }}
-          >
-            <MenuIcon />
-          </IconButton>
+          <div className="flex">
+            <ul className={`${styles.links} flex align-center`}>
+              <Link href="/questions">
+                <li className={`${styles.link} c-pointer`}>Questions</li>
+              </Link>
+
+              <Link href="/posts">
+                <li className={`${styles.link} c-pointer`}>Blogs</li>
+              </Link>
+              <Link href="/users">
+                <li className={`${styles.link} c-pointer`}>Users</li>
+              </Link>
+              <Link href="/auth">
+                <Button
+                  className={`${styles.link} c-pointer`}
+                  variant="outlined"
+                  color="secondary"
+                  sx={{ textTransform: "none" }}
+                >
+                  Login
+                </Button>
+              </Link>
+            </ul>
+            <IconButton
+              onClick={() => toggleDrawer(true)}
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ padding: 0 }}
+              className={styles.menu}
+            >
+              <MenuIcon />
+            </IconButton>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer toggleDrawer={toggleDrawer} left={left} />

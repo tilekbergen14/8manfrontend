@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../styles/Post.module.css";
+import styles from "../styles/PostComponent.module.css";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -82,10 +82,12 @@ export default function Post({ post }) {
               {likes} {likes === 0 || likes === 1 ? "like" : "likes"}
             </p>
           </div>
-          <p className={styles.smallText}>
-            <span className={styles.successText}>Readtime: </span>
-            {post.readtime}
-          </p>
+          {post.readtime && (
+            <p className={styles.smallText}>
+              <span className={styles.successText}>Readtime: </span>
+              {post.readtime}
+            </p>
+          )}
         </div>
       </div>
     </div>

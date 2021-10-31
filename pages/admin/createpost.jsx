@@ -3,7 +3,7 @@ import MyEditor from "../../components/Editor";
 import TextField from "@mui/material/TextField";
 import styles from "../../styles/CreatePost.module.css";
 import Button from "@mui/material/Button";
-import { EditorState } from "draft-js";
+import { convertToRaw, EditorState } from "draft-js";
 import Image from "next/image";
 import axios from "axios";
 import Backdrop from "../../components/Backdrop";
@@ -85,6 +85,7 @@ export default function createpost(props) {
           {
             ...info,
             imgUrl: imgresult.data.imageUrl ? imgresult.data.imageUrl : "",
+            body: convertToRaw(info.body.getCurrentContent()),
           },
           {
             headers: {
@@ -93,11 +94,18 @@ export default function createpost(props) {
           }
         );
       } else {
-        result = await axios.post(`${process.env.server}/post`, info, {
-          headers: {
-            authorization: "Bearer " + user.token,
+        result = await axios.post(
+          `${process.env.server}/post`,
+          {
+            ...info,
+            body: convertToRaw(info.body.getCurrentContent()),
           },
-        });
+          {
+            headers: {
+              authorization: "Bearer " + user.token,
+            },
+          }
+        );
       }
       result &&
         setLoading(false) &
