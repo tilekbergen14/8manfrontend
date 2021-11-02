@@ -74,10 +74,45 @@ export default class ControlledEditor extends Component {
         <Editor
           editorState={editorState}
           toolbarClassName={styles.toolbar}
-          wrapperClassName={styles.wrapper}
+          wrapperClassName={
+            this.props.wrapper ? styles.smallWrapper : styles.wrapper
+          }
           editorClassName={styles.editor}
           onEditorStateChange={this.onEditorStateChange}
           toolbar={{
+            options: this.props.toolbar
+              ? this.props.toolbar
+              : [
+                  "inline",
+                  "blockType",
+                  "fontSize",
+                  "fontFamily",
+                  "list",
+                  "textAlign",
+                  "colorPicker",
+                  "link",
+                  "embedded",
+                  "emoji",
+                  "image",
+                  "remove",
+                  "history",
+                ],
+            blockType: {
+              className: "blocktype",
+              options: this.props.blockType
+                ? this.props.blockType
+                : [
+                    "Normal",
+                    "H1",
+                    "H2",
+                    "H3",
+                    "H4",
+                    "H5",
+                    "H6",
+                    "Blockquote",
+                    "Code",
+                  ],
+            },
             image: {
               defaultSize: {
                 width: "100%",

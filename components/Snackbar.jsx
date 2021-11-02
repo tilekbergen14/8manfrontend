@@ -26,7 +26,7 @@ export default function CustomizedSnackbars({
   };
 
   return (
-    <Stack spacing={2} sx={{ width: "100%" }} className="toast">
+    <Stack spacing={2} sx={{ width: "100%", position: "absolute" }}>
       <Snackbar
         anchorOrigin={{
           vertical: vertical ? vertical : "bottom",

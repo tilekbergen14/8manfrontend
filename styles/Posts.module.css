@@ -1,14 +1,24 @@
 .postsPage {
   padding: 24px;
   display: grid;
-  grid-template-columns: 0.3fr 0.6fr 0.3fr;
+  grid-template-columns: 0.3fr 0.7fr 240px;
   grid-gap: 12px;
   background-color: #eeeeee;
   min-height: 100vh;
 }
 .first {
-  background-color: rgb(233, 227, 227);
+  background-color: #fff;
   height: 400px;
+  padding: 8px;
+  border-radius: 8px;
+}
+.title {
+  font-weight: 400;
+  margin-top: 8px;
+}
+.languages {
+  display: grid;
+  grid-gap: 8px;
 }
 .second {
   display: grid;
@@ -16,12 +26,10 @@
   grid-gap: 8px;
 }
 .third {
-  background-color: rgb(233, 223, 223);
+  background-color: #fff;
   height: 400px;
-}
-.title {
-  margin: 0;
-  font-weight: 400;
+  position: relative;
+  border-radius: 8px;
 }
 
 @media screen and (max-width: 1000px) {

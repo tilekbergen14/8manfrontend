@@ -66,8 +66,8 @@ export default function Post({ post }) {
         <Image className={styles.wave} src={wave} layout="fill" />
       </div>
       <div className={styles.section}>
-        <div>
-          <div className={styles.post}>
+        <div className={styles.post}>
+          <div className={styles.header}>
             <div className={styles.postInfo}>
               <h1 className={styles.title}>{post.title}</h1>
               <div
@@ -128,6 +128,7 @@ export default function Post({ post }) {
             dangerouslySetInnerHTML={{ __html: body }}
           ></div>
         </div>
+
         <div className={styles.additional}></div>
       </div>
     </div>

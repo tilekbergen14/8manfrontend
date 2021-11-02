@@ -8,12 +8,10 @@ body {
   font-family: "Montserrat Alternates", sans-serif;
 }
 span {
-  font-family: "Montserrat Alternates", sans-serif;
+  font-family: inherit;
   color: inherit;
 }
-* {
-  font-family: "Montserrat Alternates", sans-serif;
-}
+
 input,
 button {
   font-family: "Montserrat Alternates", sans-serif !important;
@@ -26,11 +24,45 @@ a :only-child {
 * {
   box-sizing: border-box;
 }
+
 figure {
   margin: 0;
 }
+blockquote {
+  background-color: #eeeeee;
+  border-left: 4px solid #406343;
+  padding: 8px 0;
+  margin: 16px 0;
+  font-style: italic;
+}
+pre {
+  width: 100%;
+  border-radius: 8px;
+  overflow-x: scroll;
+  font-family: cursive !important;
+  font-size: 16px !important;
+}
+pre::-webkit-scrollbar {
+  width: 4px;
+}
+pre::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+pre::-webkit-scrollbar-thumb {
+  background-color: rgb(27, 21, 21);
+  border-radius: 8px;
+}
+p {
+  line-height: 1.5;
+  font-size: 18px;
+}
 .grid {
   display: grid;
+}
+.b-radius-8 {
+  border-radius: 8px;
 }
 .grid-gap-8 {
   grid-gap: 8px;
@@ -55,7 +87,9 @@ figure {
 .flex {
   display: flex;
 }
-
+.title {
+  color: #111f4d;
+}
 .align-center {
   align-items: center;
 }
@@ -72,10 +106,12 @@ figure {
 .d-none {
   display: none;
 }
-.toast {
-  display: flex;
-  width: 100%;
-  background-color: #e41749;
+.m-0 {
+  margin: 0;
+}
+
+.blocktype {
+  width: 200px !important;
 }
 /**************editor-styles******************/
 .rdw-image-modal-upload-option-label {
@@ -88,6 +124,7 @@ figure {
 @media screen and (max-width: 600px) {
   .css-4t3x6l-MuiPaper-root-MuiDrawer-paper {
     width: 80%;
+    overflow-x: hidden;
   }
 }
 /*********prismjs*********/

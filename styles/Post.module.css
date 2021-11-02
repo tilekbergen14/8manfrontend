@@ -16,9 +16,12 @@
   width: 100%;
 }
 .post {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.header {
   display: grid;
-  grid-template-columns: 0.6fr 0.4fr;
-  max-width: 1100px;
+  grid-template-columns: 0.7fr 0.3fr;
 }
 .postInfo {
   display: flex;
@@ -31,10 +34,12 @@
   font-size: 40px;
 }
 .postImage {
+  place-self: center;
   position: relative;
   aspect-ratio: 1 / 1;
   border-radius: 8px;
   min-width: 100%;
+  background-color: #eeeeee;
 }
 .image {
   border-radius: 8px;
@@ -65,7 +70,10 @@
   border-radius: 8px;
   padding: 4px 8px;
 }
-
+.body {
+  max-width: 100%;
+  padding: 0 4px;
+}
 @media screen and (max-width: 1100px) {
   .section {
     grid-template-columns: 1fr;
@@ -83,7 +91,7 @@
   .title {
     font-size: 24px;
   }
-  .post {
+  .header {
     grid-template-columns: 1fr;
   }
   .postImage {

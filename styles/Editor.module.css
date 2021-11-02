@@ -5,12 +5,21 @@
   max-height: 90vh;
   overflow-y: scroll;
 }
+.smallWrapper {
+  margin: 8px 0;
+  box-shadow: 2px 2px 4px #757575;
+  position: relative;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+}
 .editor {
   background-color: #fff;
   padding: 8px;
+  margin: 0;
   font-size: 18px;
   line-height: 1.5;
-  min-height: 400px;
+  flex: 1;
 }
 
 .toolbar {

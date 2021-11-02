@@ -5,14 +5,15 @@
 }
 .header {
   display: flex;
+  align-items: center;
 }
-.name,
-.createdAt {
+.name {
   margin: 0;
 }
 .createdAt {
   font-size: 14px;
   color: #798777;
+  margin: 0;
 }
 .avatar {
   margin-right: 8px;
