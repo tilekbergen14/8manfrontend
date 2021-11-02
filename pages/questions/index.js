@@ -83,7 +83,7 @@ export default function questions({ questions }) {
           </Button>
         </div>
         {questions.map((question) => (
-          <Question key={question.id} question={question} />
+          <Question key={question.id} question={question} question={question} />
         ))}
       </div>
       <div className={styles.third}>

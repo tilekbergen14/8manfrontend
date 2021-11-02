@@ -32,6 +32,25 @@
   border-radius: 8px;
 }
 
+/**********question-styles*************/
+.question {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 8px;
+}
+.likeText {
+  margin: 0;
+  font-size: 14px;
+  color: #757575;
+  font-weight: 600;
+}
+.body {
+  margin: 16px 0;
+}
+.editor {
+  height: 316px;
+  background-color: #fff;
+}
 @media screen and (max-width: 1000px) {
   .postsPage {
     grid-template-columns: 0.3fr 0.9fr;
@@ -46,5 +65,8 @@
   .first,
   .third {
     display: none;
+  }
+  .questionTitle {
+    font-size: 20px;
   }
 }

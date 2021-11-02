@@ -61,8 +61,15 @@ p {
 .grid {
   display: grid;
 }
+.grid-center {
+  place-items: center;
+}
 .b-radius-8 {
   border-radius: 8px;
+}
+.b-r-2 {
+  border-left: 2px solid #757575;
+  width: 100px;
 }
 .grid-gap-8 {
   grid-gap: 8px;
@@ -86,6 +93,9 @@ p {
 
 .flex {
   display: flex;
+}
+.flex-end {
+  justify-content: flex-end;
 }
 .title {
   color: #111f4d;
