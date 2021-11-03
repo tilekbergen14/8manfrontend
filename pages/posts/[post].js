@@ -37,7 +37,6 @@ export default function Post({ post }) {
   };
   const date = new Date(post.createdAt);
 
-  let body;
   let options = {
     blockRenderers: {
       code: (block) => {
@@ -49,11 +48,8 @@ export default function Post({ post }) {
       },
     },
   };
-  try {
-    body = stateToHTML(convertFromRaw(post.body), options);
-  } catch (err) {
-    console.log(err);
-  }
+  const body = stateToHTML(convertFromRaw(post.body), options);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       Prism.highlightAll();

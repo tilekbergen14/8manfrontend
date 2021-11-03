@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "../styles/QuestionModal.module.css";
 import { TextField, Button } from "@mui/material";
 import MyEditor from "./Editor";
-import { EditorState } from "draft-js";
+import { convertToRaw, EditorState } from "draft-js";
 import axios from "axios";
 import Snackbar from "./Snackbar";
 
@@ -32,7 +32,10 @@ export default function Askquestion({ setAskquestion, setQuestionCreated }) {
       const user = JSON.parse(localStorage.getItem("user"));
       const result = await axios.post(
         `${process.env.server}/question`,
-        question,
+        {
+          ...question,
+          body: convertToRaw(question.body.getCurrentContent()),
+        },
         {
           headers: {
             authorization: "Bearer " + user.token,
