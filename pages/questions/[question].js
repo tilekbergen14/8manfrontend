@@ -83,9 +83,7 @@ export default function questions() {
               <p className={styles.likeText}>{likes} Likes</p>
             </div>
           </div>
-          <h2 className={`${styles.questionTitle} title`}>
-            Why isn't this working?
-          </h2>
+          <h2 className={`${styles.questionTitle}`}>Why isn't this working?</h2>
           <div className={styles.body}>This is the body of this question</div>
         </div>
         <div className="flex space-between">

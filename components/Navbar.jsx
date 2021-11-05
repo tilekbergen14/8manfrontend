@@ -27,7 +27,7 @@ export default function Navbar() {
             component="div"
             sx={{ flexGrow: 1, marginBottom: 1 }}
           >
-            <span className={`${styles.logo} c-pointer`}>eightman</span>
+            <span className={`logo c-pointer`}>eightman</span>
           </Typography>
           <div className="flex">
             <ul className={`${styles.links} flex align-center`}>
