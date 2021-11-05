@@ -28,7 +28,7 @@ export default function Navbar() {
             sx={{ flexGrow: 1, marginBottom: 1 }}
           >
             <Link href="/">
-              <span className={`${styles.logo} c-pointer`}>eightman</span>
+              <span className={`logo c-pointer`}>eightman</span>
             </Link>
           </Typography>
           <div className="flex">

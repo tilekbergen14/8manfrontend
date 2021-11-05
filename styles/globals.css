@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@100;300;400;700&display=swap");
 html,
@@ -57,6 +58,11 @@ p {
   line-height: 1.5;
   font-size: 18px;
 }
+
+.logo {
+  font-family: "Dancing Script", cursive;
+  font-size: 32px;
+}
 .grid {
   display: grid;
 }
@@ -97,7 +103,7 @@ p {
   justify-content: flex-end;
 }
 .title {
-  color: #111f4d;
+  color: #757575;
 }
 .align-center {
   align-items: center;
@@ -118,6 +124,13 @@ p {
 .m-0 {
   margin: 0;
 }
+.mx-4 {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+.mt-0 {
+  margin-top: 0;
+}
 
 .blocktype {
   width: 200px !important;
@@ -130,10 +143,16 @@ p {
   overflow: hidden;
 }
 /******drawer*******/
-@media screen and (max-width: 600px) {
+.footer {
+  padding: 24px;
+}
+@media screen and (max-width: 900px) {
   .css-4t3x6l-MuiPaper-root-MuiDrawer-paper {
     width: 80%;
     overflow-x: hidden;
+  }
+  .footer {
+    padding: 8px;
   }
 }
 /*********prismjs*********/

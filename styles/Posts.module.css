@@ -6,12 +6,7 @@
   background-color: #eeeeee;
   min-height: 100vh;
 }
-.first {
-  background-color: #fff;
-  height: 400px;
-  padding: 8px;
-  border-radius: 8px;
-}
+
 .title {
   font-weight: 400;
   margin-top: 8px;
@@ -38,6 +33,9 @@
   border-radius: 8px;
   padding: 8px;
   overflow-x: hidden;
+}
+.questionTitle {
+  color: #111f4d;
 }
 .likeText {
   margin: 0;

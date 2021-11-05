@@ -2,6 +2,7 @@ import "../styles/globals.css";
 import "../styles/prism.css";
 import Navbar from "../components/Navbar";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Footes from "../components/Footer";
 
 const theme = createTheme({
   typography: {
@@ -24,6 +25,10 @@ const theme = createTheme({
       main: "#406343",
       contrastText: "#fff",
     },
+    blue: {
+      main: "#bae8e8",
+      contrastText: "#000",
+    },
   },
 });
 
@@ -31,8 +36,8 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
       <Navbar />
-
       <Component {...pageProps} />
+      <Footes />
     </ThemeProvider>
   );
 }
