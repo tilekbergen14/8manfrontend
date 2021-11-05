@@ -25,7 +25,7 @@ export default function Likes({ likewhere, isLiked, setLikes, id }) {
             },
           }
         )
-        .then((result) => console.log(result))
+        .then((result) => {})
         .catch((err) => console.log(err.response ? err.response.data : err));
   };
   return liked ? (

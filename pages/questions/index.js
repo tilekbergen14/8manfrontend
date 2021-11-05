@@ -94,8 +94,14 @@ export default function questions({ questions }) {
 }
 
 export const getStaticProps = async () => {
-  const questions = await axios.get(`${process.env.server}/question`);
-  return {
-    props: { questions: questions.data ? questions.data : [] },
-  };
+  try {
+    const questions = await axios.get(`${process.env.server}/question`);
+    return {
+      props: { questions: questions.data ? questions.data : [] },
+    };
+  } catch (err) {
+    return {
+      notFound: true,
+    };
+  }
 };

@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../styles/Posts.module.css";
 import { Button } from "@mui/material";
 import Image from "next/image";
 import adbox from "../../public/images/adbox.png";
 import { stateToHTML } from "draft-js-export-html";
+import Prism from "prismjs";
 import {
   Avatar,
   ListItemButton,
@@ -14,17 +15,28 @@ import Likes from "../../components/Likes";
 import MyEditor from "../../components/Editor";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import axios from "axios";
+import Backdrop from "../../components/Backdrop";
 
 export default function questions({ question }) {
   const [likes, setLikes] = useState(question.likes);
   const toolbar = ["blockType", "list", "link"];
   const [error, setError] = useState(null);
+  const [answerAdded, setAnswerAdded] = useState(null);
   const [loading, setLoading] = useState(false);
   const blockType = ["Normal", "Blockquote", "Code"];
-  const [answer, setAnswer] = useState(EditorState.createEmpty());
+  const [answer, setAnswer] = useState({
+    editorState: EditorState.createEmpty(),
+  });
   const handleChange = (e) => {
-    setAnswer(e);
+    setAnswer({ editorState: e });
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      Prism.highlightAll();
+    }
+  }, []);
+
   let options = {
     blockRenderers: {
       code: (block) => {
@@ -39,25 +51,25 @@ export default function questions({ question }) {
   let body;
   try {
     body = stateToHTML(convertFromRaw(question.body), options);
-  } catch (err) {
-    console.log(err);
-  }
-
-  const onSubmit = async () => {
+  } catch (err) {}
+  const handleSubmit = async () => {
     try {
       setLoading(true);
       const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         const result = await axios.post(
           `${process.env.server}/answer`,
-          convertToRaw(answer.getCurrentContent()),
+          {
+            body: convertToRaw(answer.editorState.getCurrentContent()),
+            question_id: question.id,
+          },
           {
             headers: {
               authorization: "Bearer " + user.token,
             },
           }
         );
-        console.log(result);
+        if (result) setAnswerAdded(true);
       }
       if (!user) {
         console.log("please log in");
@@ -66,6 +78,7 @@ export default function questions({ question }) {
     } catch (err) {
       setLoading(false);
       setError("Something went wrong!");
+      console.log(err);
     }
   };
   return (
@@ -138,43 +151,70 @@ export default function questions({ question }) {
             </div>
           </div>
           <h2 className={`${styles.questionTitle} title`}>{question.title}</h2>
-          <div className={styles.body}>{body}</div>
+          <div
+            className={styles.body}
+            dangerouslySetInnerHTML={{ __html: body }}
+          ></div>
         </div>
-        <div className="flex space-between">
+        {!question.answers ? (
           <h3
             className={styles.questionTitle}
             style={{ margin: "8px 0", color: "#757575" }}
           >
-            23 Answers
+            There is no answers yet!
           </h3>
-          <div>
-            <Button variant="text" sx={{ textTransform: "none" }}>
-              Top
-            </Button>
-            <Button variant="text" sx={{ textTransform: "none" }}>
-              Latest
-            </Button>
-          </div>
-        </div>
-        <div className={styles.question}>
-          <div className={styles.body}>This is the body of this question</div>
+        ) : (
           <div className="flex space-between">
-            <div className="flex align-center">
-              <ListItemIcon>
-                <Avatar variant="rounded" />
-              </ListItemIcon>
-              <ListItemText
-                sx={{ margin: 0 }}
-                primary="This is it"
-                secondary="tilekbergene"
-              />
-            </div>
-            <div className="grid grid-center b-r-2">
-              <Likes likewhere="answer" setLikes={setLikes} id="fsdfdsf" />
-              <p className={styles.likeText}>{likes} Likes</p>
+            <h3
+              className={styles.questionTitle}
+              style={{ margin: "8px 0", color: "#757575" }}
+            >
+              {question.answers && question.answers.length} Answers
+            </h3>
+            <div>
+              <Button variant="text" sx={{ textTransform: "none" }}>
+                Top
+              </Button>
+              <Button variant="text" sx={{ textTransform: "none" }}>
+                Latest
+              </Button>
             </div>
           </div>
-        </div>
+        )}
+        {question.answers &&
+          question.answers.map(
+            (answer) =>
+              answer.body !== null && (
+                <div className={styles.question} key={answer.id}>
+                  <div
+                    className={styles.body}
+                    dangerouslySetInnerHTML={{
+                      __html: stateToHTML(convertFromRaw(answer.body), options),
+                    }}
+                  ></div>
+                  <div className="flex space-between">
+                    <div className="flex align-center">
+                      <ListItemIcon>
+                        <Avatar variant="rounded" />
+                      </ListItemIcon>
+                      <ListItemText
+                        sx={{ margin: 0 }}
+                        primary={answer.author}
+                        secondary={answer.createdAt}
+                      />
+                    </div>
+                    <div className="grid grid-center b-r-2">
+                      <Likes
+                        likewhere="answer"
+                        setLikes={setLikes}
+                        id="fsdfdsf"
+                      />
+                      <p className={styles.likeText}>{likes} Likes</p>
+                    </div>
+                  </div>
+                </div>
+              )
+          )}
         <h3
           className={styles.questionTitle}
           style={{ margin: "8px 0 0 0", color: "#757575" }}
@@ -183,15 +223,20 @@ export default function questions({ question }) {
         </h3>
         <div className={styles.editor}>
           <MyEditor
-            editorState={answer}
-            wrapper={true}
+            onEditorChange={handleChange}
             toolbar={toolbar}
             blockType={blockType}
-            onEditorChange={handleChange}
+            editorState={answer.editorState}
+            wrapper={true}
           />
         </div>
         <div className="flex flex-end">
-          <Button variant="contained" color="success" onClick={onSubmit}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleSubmit}
+            sx={{ marginTop: "8px" }}
+          >
             Answer
           </Button>
         </div>
@@ -199,6 +244,7 @@ export default function questions({ question }) {
       <div className={styles.third}>
         <Image src={adbox} layout="fill" className="b-radius-8" />
       </div>
+      {loading && <Backdrop loading={loading} />}
     </div>
   );
 }

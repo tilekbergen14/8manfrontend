@@ -39,7 +39,6 @@ pre {
   width: 100%;
   border-radius: 8px;
   overflow-x: scroll;
-  font-family: cursive !important;
   font-size: 16px !important;
 }
 pre::-webkit-scrollbar {

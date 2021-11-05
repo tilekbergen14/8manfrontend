@@ -84,9 +84,11 @@ export default function Question({ question }) {
               {likes} {likes === 0 || likes === 1 ? "like" : "likes"}
             </p>
           </div>
-          <Button variant="contained" color="info" size="small">
-            Answer
-          </Button>
+          <Link href={`/questions/${question.id}`}>
+            <Button variant="contained" color="info" size="small">
+              Answer
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

@@ -37,6 +37,7 @@
   background-color: #fff;
   border-radius: 8px;
   padding: 8px;
+  overflow-x: hidden;
 }
 .likeText {
   margin: 0;
@@ -48,8 +49,7 @@
   margin: 16px 0;
 }
 .editor {
-  height: 316px;
-  background-color: #fff;
+  height: 300px;
 }
 @media screen and (max-width: 1000px) {
   .postsPage {
