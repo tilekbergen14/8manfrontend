@@ -7,6 +7,7 @@ import Image from "next/image";
 import adbox from "../../public/images/adbox.png";
 import QuestionModal from "../../components/Askquestion";
 import Snackbar from "../../components/Snackbar";
+import Languages from "../../components/Languages";
 
 export default function questions({ questions }) {
   const [askquestion, setAskquestion] = useState(false);
@@ -27,40 +28,10 @@ export default function questions({ questions }) {
           color="success"
         />
       )}
-      <div className={styles.first}>
-        <h3 className={styles.title}>Learn languages</h3>
-        <div className={styles.languages}>
-          <Button
-            variant="contained"
-            sx={{ textTransform: "none" }}
-            size="small"
-          >
-            Python
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ textTransform: "none" }}
-            size="small"
-            color="warning"
-          >
-            JavaScript
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ textTransform: "none" }}
-            size="small"
-            color="error"
-          >
-            Html
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ textTransform: "none" }}
-            size="small"
-            color="success"
-          >
-            Css
-          </Button>
+      <div className={styles.left}>
+        <Languages />
+        <div className={styles.ad}>
+          <Image src={adbox} layout="fill" className="b-radius-8" />
         </div>
       </div>
       <div className={styles.second}>

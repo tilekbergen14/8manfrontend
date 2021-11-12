@@ -3,6 +3,9 @@
   top: 0;
   z-index: 4;
 }
+.appbar {
+  background-color: rgb(17, 31, 77);
+}
 .links {
   list-style: none;
 }

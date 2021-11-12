@@ -9,6 +9,7 @@ import { Button } from "@mui/material";
 import Prism from "prismjs";
 import { stateToHTML } from "draft-js-export-html";
 import { convertFromRaw } from "draft-js";
+import moment from "moment";
 
 export default function Post({ post }) {
   const [liked, setLiked] = useState(post.liked);
@@ -35,7 +36,6 @@ export default function Post({ post }) {
         .then((result) => console.log(result))
         .catch((err) => console.log(err.response ? err.response.data : err));
   };
-  const date = new Date(post.createdAt);
 
   let options = {
     blockRenderers: {
@@ -71,8 +71,7 @@ export default function Post({ post }) {
                 style={{ marginBottom: "16px" }}
               >
                 <p className={`${styles.smallText} ${styles.secondary}`}>
-                  {post.author} |{" "}
-                  {`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`}
+                  {post.author} | {moment(post.createdAt).fromNow()}
                 </p>
               </div>
               <div className={styles.tags}>

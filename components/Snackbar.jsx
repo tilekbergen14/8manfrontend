@@ -11,6 +11,7 @@ export default function CustomizedSnackbars({
   open,
   setPostCreated,
   setError,
+  setOpen,
   color,
   message,
   vertical,
@@ -23,6 +24,7 @@ export default function CustomizedSnackbars({
     }
     setPostCreated && setPostCreated(false);
     setError && setError(false);
+    setOpen && setOpen(false);
   };
 
   return (

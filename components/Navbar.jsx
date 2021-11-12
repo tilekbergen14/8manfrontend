@@ -11,16 +11,20 @@ import Drawer from "./Drawer";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 
-export default function Navbar() {
+export default function Navbar({ profileImg }) {
   const [left, setLeft] = React.useState(false);
 
   const toggleDrawer = (open) => {
     setLeft(open);
   };
+  let user;
+  if (typeof window !== "undefined") {
+    user = JSON.parse(localStorage.getItem("user"));
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }} className={styles.stick}>
-      <AppBar position="sticky" color="primary">
+      <AppBar position="sticky" className={styles.appbar}>
         <Toolbar className={styles.navbar}>
           <Typography
             variant="h6"
@@ -43,15 +47,19 @@ export default function Navbar() {
               <Link href="/users">
                 <li className={`${styles.link} c-pointer`}>Users</li>
               </Link>
-              <Link href="/auth">
-                <Button
-                  className={`${styles.link} c-pointer`}
-                  variant="outlined"
-                  color="secondary"
-                  sx={{ textTransform: "none" }}
-                >
-                  Login
-                </Button>
+              <Link href={user ? "/me" : "/auth"}>
+                {user ? (
+                  <Avatar src={profileImg} sx={{ marginLeft: "16px" }} />
+                ) : (
+                  <Button
+                    className={`${styles.link} c-pointer`}
+                    variant="outlined"
+                    color="secondary"
+                    sx={{ textTransform: "none" }}
+                  >
+                    Login
+                  </Button>
+                )}
               </Link>
             </ul>
             <IconButton

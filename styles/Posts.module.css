@@ -26,12 +26,19 @@
   position: relative;
   border-radius: 8px;
 }
+.ad {
+  background-color: #fff;
+  height: 400px;
+  position: relative;
+  border-radius: 8px;
+  display: none;
+}
 
 /**********question-styles*************/
 .question {
   background-color: #fff;
   border-radius: 8px;
-  padding: 8px;
+  padding: 16px 8px 0 8px;
   overflow-x: hidden;
 }
 .questionTitle {
@@ -49,9 +56,22 @@
 .editor {
   height: 300px;
 }
+.answer {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 0 8px 16px 8px;
+  overflow-x: hidden;
+}
 @media screen and (max-width: 1000px) {
   .postsPage {
     grid-template-columns: 0.3fr 0.9fr;
+  }
+  .ad {
+    display: block;
+    margin: 8px 0;
+  }
+  .third {
+    display: none;
   }
 }
 
@@ -61,7 +81,8 @@
     grid-template-columns: 1fr;
   }
   .first,
-  .third {
+  .third,
+  .left {
     display: none;
   }
   .questionTitle {

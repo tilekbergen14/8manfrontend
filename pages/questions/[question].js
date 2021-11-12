@@ -5,21 +5,24 @@ import Image from "next/image";
 import adbox from "../../public/images/adbox.png";
 import { stateToHTML } from "draft-js-export-html";
 import Prism from "prismjs";
-import {
-  Avatar,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import { Avatar, ListItemIcon, ListItemText } from "@mui/material";
+import moment from "moment";
 import Likes from "../../components/Likes";
 import MyEditor from "../../components/Editor";
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import axios from "axios";
 import Backdrop from "../../components/Backdrop";
+import Languages from "../../components/Languages";
+import Delete from "../../components/Delete";
+import Snackbar from "../../components/Snackbar";
 
 export default function questions({ question }) {
   const [likes, setLikes] = useState(question.likes);
   const toolbar = ["blockType", "list", "link"];
+  const [deleted, setDeleted] = useState(false);
+  const [answers, setAnswers] = useState(
+    question.answers ? question.answers : []
+  );
   const [error, setError] = useState(null);
   const [answerAdded, setAnswerAdded] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,13 +52,16 @@ export default function questions({ question }) {
     },
   };
   let body;
+  let user;
+  if (typeof window !== "undefined") {
+    user = JSON.parse(localStorage.getItem("user"));
+  }
   try {
     body = stateToHTML(convertFromRaw(question.body), options);
   } catch (err) {}
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      const user = JSON.parse(localStorage.getItem("user"));
       if (user) {
         const result = await axios.post(
           `${process.env.server}/answer`,
@@ -84,46 +90,10 @@ export default function questions({ question }) {
   return (
     <div className={styles.postsPage}>
       <div className={styles.first}>
-        <h3 className={styles.title}>Learn languages</h3>
-        <div className={styles.languages}>
-          <Button
-            variant="contained"
-            sx={{ textTransform: "none" }}
-            size="small"
-          >
-            Python
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ textTransform: "none" }}
-            size="small"
-            color="warning"
-          >
-            JavaScript
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ textTransform: "none" }}
-            size="small"
-            color="error"
-          >
-            Html
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ textTransform: "none" }}
-            size="small"
-            color="success"
-          >
-            Css
-          </Button>
-        </div>
+        <Languages />
       </div>
       <div className={styles.second}>
-        <h3
-          className={styles.questionTitle}
-          style={{ margin: "8px 0", color: "#757575" }}
-        >
+        <h3 className="title" style={{ margin: "8px 0" }}>
           Question
         </h3>
         <div className={styles.question}>
@@ -135,7 +105,7 @@ export default function questions({ question }) {
               <ListItemText
                 sx={{ margin: 0 }}
                 primary={question.author}
-                secondary={question.createdAt}
+                secondary={moment(question.createdAt).fromNow()}
               />
             </div>
             <div className="grid grid-center b-r-2">
@@ -150,26 +120,26 @@ export default function questions({ question }) {
               </p>
             </div>
           </div>
-          <h2 className={`${styles.questionTitle} title`}>{question.title}</h2>
+          <h2 className={`${styles.questionTitle}`}>{question.title}</h2>
           <div
             className={styles.body}
             dangerouslySetInnerHTML={{ __html: body }}
           ></div>
         </div>
-        {!question.answers ? (
-          <h3
-            className={styles.questionTitle}
-            style={{ margin: "8px 0", color: "#757575" }}
+        {question.answers && question.answers.length === 0 ? (
+          <p
+            className={styles.likeText}
+            style={{ margin: "16px 0 0 0", color: "#264653" }}
           >
-            There is no answers yet!
-          </h3>
+            There is no answers yet! Be first one to answer
+          </p>
         ) : (
           <div className="flex space-between">
-            <h3
-              className={styles.questionTitle}
-              style={{ margin: "8px 0", color: "#757575" }}
-            >
-              {question.answers && question.answers.length} Answers
+            <h3 className="title" style={{ margin: "8px 0" }}>
+              {(question.answers && question.answers.length === 0) ||
+              question.answers.length === 1
+                ? question.answers.length + " Answer"
+                : question.answers.length + " Answers"}
             </h3>
             <div>
               <Button variant="text" sx={{ textTransform: "none" }}>
@@ -181,11 +151,11 @@ export default function questions({ question }) {
             </div>
           </div>
         )}
-        {question.answers &&
-          question.answers.map(
+        {answers &&
+          answers.map(
             (answer) =>
               answer.body !== null && (
-                <div className={styles.question} key={answer.id}>
+                <div className={styles.answer} key={answer.id}>
                   <div
                     className={styles.body}
                     dangerouslySetInnerHTML={{
@@ -200,25 +170,34 @@ export default function questions({ question }) {
                       <ListItemText
                         sx={{ margin: 0 }}
                         primary={answer.author}
-                        secondary={answer.createdAt}
+                        secondary={moment(answer.createdAt).fromNow()}
                       />
                     </div>
-                    <div className="grid grid-center b-r-2">
-                      <Likes
-                        likewhere="answer"
-                        setLikes={setLikes}
-                        id="fsdfdsf"
-                      />
-                      <p className={styles.likeText}>{likes} Likes</p>
-                    </div>
+                    {user &&
+                      (user.id === answer.author_id ? (
+                        <div className="grid grid-center b-r-2">
+                          <Delete
+                            wheredelete="answer"
+                            setDeleted={setDeleted}
+                            setAnswers={setAnswers}
+                            id={answer.id}
+                          />
+                        </div>
+                      ) : (
+                        <div className="grid grid-center b-r-2">
+                          <Likes
+                            likewhere="answer"
+                            setLikes={setLikes}
+                            id="fsdfdsf"
+                          />
+                          <p className={styles.likeText}>{likes} Likes</p>
+                        </div>
+                      ))}
                   </div>
                 </div>
               )
           )}
-        <h3
-          className={styles.questionTitle}
-          style={{ margin: "8px 0 0 0", color: "#757575" }}
-        >
+        <h3 className="title" style={{ margin: "8px 0 0 0" }}>
           Write your answer
         </h3>
         <div className={styles.editor}>
@@ -235,7 +214,7 @@ export default function questions({ question }) {
             variant="contained"
             color="success"
             onClick={handleSubmit}
-            sx={{ marginTop: "8px" }}
+            sx={{ marginTop: "16px" }}
           >
             Answer
           </Button>
@@ -245,6 +224,14 @@ export default function questions({ question }) {
         <Image src={adbox} layout="fill" className="b-radius-8" />
       </div>
       {loading && <Backdrop loading={loading} />}
+      {deleted && (
+        <Snackbar
+          setOpen={setDeleted}
+          open={deleted}
+          message="Comment deleted successfully!"
+          color="danger"
+        />
+      )}
     </div>
   );
 }

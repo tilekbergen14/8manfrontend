@@ -10,7 +10,9 @@ import Languages from "../../components/Languages";
 export default function posts({ posts }) {
   return (
     <div className={styles.postsPage}>
-      <Languages />
+      <div className={styles.first}>
+        <Languages />
+      </div>
       <div className={styles.second}>
         <div className="flex">
           <Button variant="text" sx={{ textTransform: "none" }}>

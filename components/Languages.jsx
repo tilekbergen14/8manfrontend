@@ -4,7 +4,9 @@ import { Button } from "@mui/material";
 export default function Languages() {
   return (
     <div style={styles.box}>
-      <h3 className="title mx-4">Learn languages</h3>
+      <h3 className="title" style={{ margin: "0 4px 8px 4px" }}>
+        Learn languages
+      </h3>
       <div style={styles.languages}>
         <Button
           style={styles.button}
@@ -50,7 +52,7 @@ const styles = {
   box: {
     backgroundColor: "#fff",
     height: "max-content",
-    padding: "4px",
+    padding: "8px 4px",
     borderRadius: "8px",
   },
   languages: {

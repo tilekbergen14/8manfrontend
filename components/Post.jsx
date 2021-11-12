@@ -5,6 +5,7 @@ import Link from "next/link";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
+import moment from "moment";
 
 export default function Post({ post }) {
   const [liked, setLiked] = useState(post.userLiked ? post.userLiked : false);
@@ -32,7 +33,7 @@ export default function Post({ post }) {
         .then((result) => console.log(result))
         .catch((err) => console.log(err.response ? err.response.data : err));
   };
-  const date = new Date(post.createdAt);
+
   return (
     <div className={styles.post}>
       <div className={styles.header}>
@@ -43,9 +44,7 @@ export default function Post({ post }) {
         />
         <div>
           <p className={styles.name}>{post.author}</p>
-          <p className={styles.createdAt}>
-            {date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()}
-          </p>
+          <p className={styles.createdAt}>{moment(post.createdAt).fromNow()}</p>
         </div>
       </div>
       <div className={styles.body}>

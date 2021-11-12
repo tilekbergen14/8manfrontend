@@ -103,7 +103,8 @@ p {
   justify-content: flex-end;
 }
 .title {
-  color: #757575;
+  color: #343a40;
+  font-weight: 400;
 }
 .align-center {
   align-items: center;
@@ -135,6 +136,9 @@ p {
 .blocktype {
   width: 200px !important;
 }
+.content {
+  min-height: 100vh;
+}
 /**************editor-styles******************/
 .rdw-image-modal-upload-option-label {
   word-wrap: anywhere;
@@ -143,16 +147,11 @@ p {
   overflow: hidden;
 }
 /******drawer*******/
-.footer {
-  padding: 24px;
-}
+
 @media screen and (max-width: 900px) {
   .css-4t3x6l-MuiPaper-root-MuiDrawer-paper {
     width: 80%;
     overflow-x: hidden;
-  }
-  .footer {
-    padding: 8px;
   }
 }
 /*********prismjs*********/
