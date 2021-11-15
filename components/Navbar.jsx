@@ -17,10 +17,13 @@ export default function Navbar({ profileImg }) {
   const toggleDrawer = (open) => {
     setLeft(open);
   };
-  let user;
-  if (typeof window !== "undefined") {
-    user = JSON.parse(localStorage.getItem("user"));
-  }
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUser(JSON.parse(localStorage.getItem("user")));
+    }
+  }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }} className={styles.stick}>
@@ -49,7 +52,11 @@ export default function Navbar({ profileImg }) {
               </Link>
               <Link href={user ? "/me" : "/auth"}>
                 {user ? (
-                  <Avatar src={profileImg} sx={{ marginLeft: "16px" }} />
+                  <Avatar
+                    className="c-pointer"
+                    src={profileImg}
+                    sx={{ marginLeft: "16px" }}
+                  />
                 ) : (
                   <Button
                     className={`${styles.link} c-pointer`}

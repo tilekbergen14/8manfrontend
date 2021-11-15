@@ -38,7 +38,7 @@ export default function CustomizedSnackbars({
         autoHideDuration={3000}
         onClose={handleClose}
       >
-        <Alert onClose={handleClose} severity={color} sx={{ width: "100%" }}>
+        <Alert onClose={handleClose} color={color} sx={{ width: "100%" }}>
           {message}
         </Alert>
       </Snackbar>

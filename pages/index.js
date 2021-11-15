@@ -1,6 +1,6 @@
 import styles from "../styles/Home.module.css";
 import Image from "next/image";
-import city from "../public/images/city.jpg";
+import homepage from "../public/images/homepage.png";
 import SearchIcon from "@mui/icons-material/Search";
 import Languages from "../components/Languages";
 import Post from "../components/Post";
@@ -23,7 +23,7 @@ export default function Home({ posts, questions }) {
           </p>
         </div>
         <div className={styles.headerImgBox}>
-          <Image src={city} layout="fill" className={styles.headerImg} />
+          <Image src={homepage} layout="fill" className={styles.headerImg} />
         </div>
         <div className={styles.searchBox}>
           <input placeholder="Search..." className={styles.input} type="text" />

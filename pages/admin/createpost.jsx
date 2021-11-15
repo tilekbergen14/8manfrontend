@@ -154,7 +154,7 @@ export default function createpost(props) {
           onClick={() => {
             imageInput.current?.click();
           }}
-          className={`c-pointer ${styles.imgUploadBox} flex justify-center align-center`}
+          className={`c-pointer styles.imgUploadBox flex justify-center align-center`}
         >
           {base64img !== "" ? (
             <Image src={base64img} layout="fill" />

@@ -8,12 +8,10 @@ export default function Delete({ wheredelete, setDeleted, setAnswers, id }) {
 
   const handleDelete = async () => {
     try {
-      console.log("deleted");
       setVerify(false);
-      const result = await axios.delete(`${process.env.server}/answer/${id}`);
-      console.log(result);
-      // setDeleted(true);
-      // setAnswers((answers) => answers.filter((answer) => answer.id !== id));
+      setDeleted(true);
+      setAnswers((answers) => answers.filter((answer) => answer.id !== id));
+      axios.delete(`${process.env.server}/answer/${id}`);
     } catch (err) {
       console.log(err);
     }

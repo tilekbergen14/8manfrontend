@@ -3,8 +3,9 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 
-export default function Likes({ likewhere, isLiked, setLikes, id }) {
+export default function Likes({ likewhere, isLiked, id, likeNumber }) {
   const [liked, setLiked] = useState(isLiked ? isLiked : false);
+  const [likes, setLikes] = useState(likeNumber ? likeNumber : 0);
 
   const handleLikes = () => {
     setLiked((liked) => !liked);
@@ -29,20 +30,40 @@ export default function Likes({ likewhere, isLiked, setLikes, id }) {
         .catch((err) => console.log(err.response ? err.response.data : err));
   };
   return liked ? (
-    <FavoriteIcon
-      color="danger"
-      className="c-pointer"
-      fontSize="small"
-      sx={{ marginRight: "4px" }}
-      onClick={handleLikes}
-    />
+    <div className="grid grid-center">
+      <FavoriteIcon
+        color="danger"
+        className="c-pointer"
+        fontSize="small"
+        onClick={handleLikes}
+      />
+      <p style={styles.likeText}>
+        {likes}
+        {likes === 0 || likes === 1 ? " Like" : " Likes"}
+      </p>
+    </div>
   ) : (
-    <FavoriteBorderIcon
-      color="danger"
-      className="c-pointer"
-      fontSize="small"
-      sx={{ marginRight: "4px" }}
-      onClick={handleLikes}
-    />
+    <div className="grid grid-center">
+      <FavoriteBorderIcon
+        color="danger"
+        className="c-pointer"
+        fontSize="small"
+        onClick={handleLikes}
+      />
+
+      <p style={styles.likeText}>
+        {likes}
+        {likes === 0 || likes === 1 ? " Like" : " Likes"}
+      </p>
+    </div>
   );
 }
+
+const styles = {
+  likeText: {
+    margin: "0",
+    fontSize: "12px",
+    color: "#757575",
+    fontWeight: "400",
+  },
+};

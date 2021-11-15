@@ -46,9 +46,9 @@
 }
 .likeText {
   margin: 0;
-  font-size: 14px;
+  font-size: 12px;
   color: #757575;
-  font-weight: 600;
+  font-weight: 400;
 }
 .body {
   margin: 16px 0;
@@ -61,6 +61,13 @@
   border-radius: 8px;
   padding: 0 8px 16px 8px;
   overflow-x: hidden;
+}
+.blockquote {
+  margin: 16px 0 0 0;
+  color: #ffffff;
+  background-color: #fd3a69;
+  padding: 24px;
+  border-radius: 8px;
 }
 @media screen and (max-width: 1000px) {
   .postsPage {

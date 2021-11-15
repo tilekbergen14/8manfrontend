@@ -69,6 +69,9 @@ p {
 .grid-center {
   place-items: center;
 }
+.grid-column-1fr {
+  grid-template-columns: 1fr 1fr;
+}
 .b-radius-8 {
   border-radius: 8px;
 }
@@ -103,8 +106,9 @@ p {
   justify-content: flex-end;
 }
 .title {
-  color: #343a40;
-  font-weight: 400;
+  color: #406343;
+  font-weight: 600;
+  font-size: 16px;
 }
 .align-center {
   align-items: center;
@@ -125,6 +129,18 @@ p {
 .m-0 {
   margin: 0;
 }
+.imgUploadBox {
+  height: 130px;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  background-color: #f2f4f7;
+  border: 2px dashed #757575;
+  font-size: 20px;
+  margin: 8px 0;
+  position: relative;
+}
+
 .mx-4 {
   margin-left: 4px;
   margin-right: 4px;
@@ -152,6 +168,9 @@ p {
   .css-4t3x6l-MuiPaper-root-MuiDrawer-paper {
     width: 80%;
     overflow-x: hidden;
+  }
+  p {
+    font-size: 16px;
   }
 }
 /*********prismjs*********/

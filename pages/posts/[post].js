@@ -33,7 +33,7 @@ export default function Post({ post }) {
             },
           }
         )
-        .then((result) => console.log(result))
+        .then((result) => {})
         .catch((err) => console.log(err.response ? err.response.data : err));
   };
 
