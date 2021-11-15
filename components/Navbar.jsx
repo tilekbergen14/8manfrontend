@@ -11,23 +11,32 @@ import Drawer from "./Drawer";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
 
-export default function Navbar() {
+export default function Navbar({ profileImg }) {
   const [left, setLeft] = React.useState(false);
 
   const toggleDrawer = (open) => {
     setLeft(open);
   };
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUser(JSON.parse(localStorage.getItem("user")));
+    }
+  }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }} className={styles.stick}>
-      <AppBar position="sticky" color="primary">
+      <AppBar position="sticky" className={styles.appbar}>
         <Toolbar className={styles.navbar}>
           <Typography
             variant="h6"
             component="div"
             sx={{ flexGrow: 1, marginBottom: 1 }}
           >
-            <span className={`logo c-pointer`}>eightman</span>
+            <Link href="/">
+              <span className={`logo c-pointer`}>eightman</span>
+            </Link>
           </Typography>
           <div className="flex">
             <ul className={`${styles.links} flex align-center`}>
@@ -41,15 +50,23 @@ export default function Navbar() {
               <Link href="/users">
                 <li className={`${styles.link} c-pointer`}>Users</li>
               </Link>
-              <Link href="/auth">
-                <Button
-                  className={`${styles.link} c-pointer`}
-                  variant="outlined"
-                  color="secondary"
-                  sx={{ textTransform: "none" }}
-                >
-                  Login
-                </Button>
+              <Link href={user ? "/me" : "/auth"}>
+                {user ? (
+                  <Avatar
+                    className="c-pointer"
+                    src={profileImg}
+                    sx={{ marginLeft: "16px" }}
+                  />
+                ) : (
+                  <Button
+                    className={`${styles.link} c-pointer`}
+                    variant="outlined"
+                    color="secondary"
+                    sx={{ textTransform: "none" }}
+                  >
+                    Login
+                  </Button>
+                )}
               </Link>
             </ul>
             <IconButton

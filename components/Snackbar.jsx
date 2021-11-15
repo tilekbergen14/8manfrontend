@@ -11,6 +11,7 @@ export default function CustomizedSnackbars({
   open,
   setPostCreated,
   setError,
+  setOpen,
   color,
   message,
   vertical,
@@ -23,6 +24,7 @@ export default function CustomizedSnackbars({
     }
     setPostCreated && setPostCreated(false);
     setError && setError(false);
+    setOpen && setOpen(false);
   };
 
   return (
@@ -36,7 +38,7 @@ export default function CustomizedSnackbars({
         autoHideDuration={3000}
         onClose={handleClose}
       >
-        <Alert onClose={handleClose} severity={color} sx={{ width: "100%" }}>
+        <Alert onClose={handleClose} color={color} sx={{ width: "100%" }}>
           {message}
         </Alert>
       </Snackbar>

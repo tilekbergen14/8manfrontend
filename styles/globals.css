@@ -40,7 +40,6 @@ pre {
   width: 100%;
   border-radius: 8px;
   overflow-x: scroll;
-  font-family: cursive !important;
   font-size: 16px !important;
 }
 pre::-webkit-scrollbar {
@@ -69,6 +68,9 @@ p {
 }
 .grid-center {
   place-items: center;
+}
+.grid-column-1fr {
+  grid-template-columns: 1fr 1fr;
 }
 .b-radius-8 {
   border-radius: 8px;
@@ -104,7 +106,9 @@ p {
   justify-content: flex-end;
 }
 .title {
-  color: #757575;
+  color: #406343;
+  font-weight: 600;
+  font-size: 16px;
 }
 .align-center {
   align-items: center;
@@ -125,6 +129,18 @@ p {
 .m-0 {
   margin: 0;
 }
+.imgUploadBox {
+  height: 130px;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  background-color: #f2f4f7;
+  border: 2px dashed #757575;
+  font-size: 20px;
+  margin: 8px 0;
+  position: relative;
+}
+
 .mx-4 {
   margin-left: 4px;
   margin-right: 4px;
@@ -136,6 +152,9 @@ p {
 .blocktype {
   width: 200px !important;
 }
+.content {
+  min-height: 100vh;
+}
 /**************editor-styles******************/
 .rdw-image-modal-upload-option-label {
   word-wrap: anywhere;
@@ -144,16 +163,14 @@ p {
   overflow: hidden;
 }
 /******drawer*******/
-.footer {
-  padding: 24px;
-}
+
 @media screen and (max-width: 900px) {
   .css-4t3x6l-MuiPaper-root-MuiDrawer-paper {
     width: 80%;
     overflow-x: hidden;
   }
-  .footer {
-    padding: 8px;
+  p {
+    font-size: 16px;
   }
 }
 /*********prismjs*********/

@@ -1,27 +1,18 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import styles from "../styles/Me.module.css";
 import TextField from "@mui/material/TextField";
-import styles from "../styles/CreatePost.module.css";
-import Button from "@mui/material/Button";
+import { InputAdornment, Button } from "@mui/material";
 import Image from "next/image";
+import useSWR from "swr";
 import axios from "axios";
-import Backdrop from "../components/Backdrop";
-import Snackbar from "../components/Snackbar";
-import { useRouter } from "next/router";
+import Skeleton from "../components/Skeleton";
 
-export default function createpost(props) {
+export default function me() {
   const imageInput = useRef(null);
-  const [loading, setLoading] = useState(false);
-  const [postCreated, setPostCreated] = useState(false);
   const [base64img, setBase64img] = useState("");
-  const [error, setError] = useState(null);
-  const [info, setInfo] = useState({
-    title: "",
-    tags: "",
-    readtime: "",
-    imgUrl: "",
-  });
-  const router = useRouter();
-
+  const [user, setUser] = useState(null);
+  const [localUser, setLocalUser] = useState(null);
+  const [info, setInfo] = useState("");
   const handleChange = (e) => {
     if (e.target) {
       if (e.target.name === "imgUrl") {
@@ -55,158 +46,155 @@ export default function createpost(props) {
       setInfo({ ...info, body: e });
     }
   };
-  let user,
-    isAdmin = false;
-  if (typeof window !== "undefined") {
-    user = localStorage.getItem("user");
-    if (user) {
-      let role = JSON.parse(user).role;
-      user = JSON.parse(user);
-      role === "admin" ? (isAdmin = true) : router.push("/");
-    } else {
-      router.push("/auth");
+
+  useEffect(() => {
+    setLocalUser(JSON.parse(localStorage.getItem("user")));
+  }, []);
+
+  const { data, error } = useSWR(
+    `${process.env.server}/user/${localUser?.id}`,
+    async (key) => {
+      return await axios.get(key);
     }
-  }
-  const createPost = async () => {
-    try {
-      if (info.title === "") return setError("Title is required!");
-      setLoading(true);
-      let result;
-      if (info.imgUrl !== "") {
-        const imgresult = await axios.post(
-          `${process.env.server}/image`,
-          info.imgUrl
-        );
-        result = await axios.post(
-          `${process.env.server}/post`,
-          {
-            ...info,
-            imgUrl: imgresult.data.imageUrl ? imgresult.data.imageUrl : "",
-          },
-          {
-            headers: {
-              authorization: "Bearer " + user.token,
-            },
-          }
-        );
-      } else {
-        result = await axios.post(`${process.env.server}/post`, info, {
-          headers: {
-            authorization: "Bearer " + user.token,
-          },
-        });
-      }
-      result &&
-        setLoading(false) &
-          setError(null) &
-          setPostCreated(true) &
-          setTimeout(() => {
-            router.push("/posts/");
-          }, 3000);
-    } catch (err) {
-      setLoading(false);
-      setError(
-        err.response
-          ? err.response.data
-          : "Something went wrong, please try again!"
-      );
-      if (err.response) {
-        if (err.response.data === "jwt expired") {
-          localStorage.clear();
-          router.push("/");
-        }
-      }
-    }
-  };
+  );
 
   return (
-    <div className="container-x container-y container">
-      <input
-        name="imgUrl"
-        onChange={handleChange}
-        type="file"
-        ref={imageInput}
-        className="d-none"
-        accept="image/png, .jpeg, .jpg, .jfif"
-      />
-      <TextField
-        fullWidth
-        id="standard-basic"
-        label="Title"
-        variant="outlined"
-        margin="dense"
-        name="title"
-        onChange={handleChange}
-      />
-      <div className="flex">
-        <div
-          onClick={() => {
-            imageInput.current?.click();
-          }}
-          className={`c-pointer ${styles.imgUploadBox} flex justify-center align-center`}
-        >
-          {base64img !== "" ? (
-            <Image src={base64img} layout="fill" />
+    <div className={styles.mepage}>
+      <div className={styles.hornav}>
+        <p style={{ color: "#000" }} className="c-pointer title">
+          About you
+        </p>
+      </div>
+      <div className={styles.content}>
+        <p id="aboutyou" className="title" style={{ margin: "0" }}>
+          About you
+        </p>
+        <div className="flex">
+          {data ? (
+            <div className="flex">
+              <div
+                onClick={() => {
+                  imageInput.current?.click();
+                }}
+                style={{
+                  aspectRatio: "1/1",
+                  height: "214px",
+                  margin: "16px 8px 0 0",
+                }}
+                className={`c-pointer imgUploadBox flex justify-center align-center`}
+              >
+                {base64img !== "" ? (
+                  <Image src={base64img} layout="fill" />
+                ) : (
+                  <p>Profile image</p>
+                )}
+              </div>
+            </div>
           ) : (
-            "Choose image"
+            <Skeleton height="200px" aspectRatio="1/1" margin="16px 8px 0 0" />
           )}
+          <div style={{ width: "100%" }}>
+            {data ? (
+              <TextField
+                id="standard-basic"
+                label="Name"
+                variant="standard"
+                defaultValue={data.data.username}
+                margin="normal"
+                fullWidth
+                name="username"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="secondary"
+                      >
+                        Edit
+                      </Button>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            ) : (
+              <Skeleton height="56px" width="100%" />
+            )}
+            <input
+              name="imgUrl"
+              onChange={handleChange}
+              type="file"
+              ref={imageInput}
+              className="d-none"
+              accept="image/png, .jpeg, .jpg, .jfif"
+            />
+            {data ? (
+              <TextField
+                fullWidth
+                name="email"
+                id="standard-basic"
+                label="Email"
+                variant="outlined"
+                margin="normal"
+                defaultValue={data.data.email}
+                InputProps={{
+                  readOnly: true,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="secondary"
+                      >
+                        Edit
+                      </Button>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            ) : (
+              <Skeleton height="56px" width="100%" />
+            )}
+            {data ? (
+              <TextField
+                id="standard-basic"
+                variant="outlined"
+                name="password"
+                label="Password"
+                defaultValue="changepassword"
+                margin="normal"
+                fullWidth
+                InputProps={{
+                  readOnly: true,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="secondary"
+                      >
+                        Edit
+                      </Button>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            ) : (
+              <Skeleton height="56px" width="100%" />
+            )}
+          </div>
         </div>
-        <div style={{ width: "100%", marginLeft: "16px" }}>
-          <TextField
-            fullWidth
-            id="standard-basic"
-            label="Tags"
-            variant="outlined"
-            margin="dense"
-            name="tags"
-            onChange={handleChange}
-          />
-          <TextField
-            fullWidth
-            id="standard-basic"
-            label="Read time"
-            variant="outlined"
-            margin="dense"
-            name="readtime"
-            onChange={handleChange}
-          />
+        <div className="flex space-between">
+          <Button variant="contained" color="secondary">
+            Cancel
+          </Button>
+          <Button variant="contained" color="success">
+            Save
+          </Button>
         </div>
       </div>
-
-      <div className="flex space-between">
-        <Button
-          variant="contained"
-          color="danger"
-          sx={{ textTransform: "lowercase", marginBottom: "16px" }}
-        >
-          cancel
-        </Button>
-        <Button
-          onClick={createPost}
-          variant="contained"
-          color="success"
-          sx={{ textTransform: "lowercase", marginBottom: "16px" }}
-        >
-          Create blog
-        </Button>
-      </div>
-      {loading && <Backdrop loading={loading} />}
-      {postCreated && (
-        <Snackbar
-          open={postCreated}
-          setPostCreated={setPostCreated}
-          message="Post created succesfully!"
-          color="success"
-        />
-      )}
-      {error && (
-        <Snackbar
-          open={error && true}
-          setError={setError}
-          message={error}
-          color="error"
-        />
-      )}
     </div>
   );
 }
