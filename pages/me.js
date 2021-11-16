@@ -6,44 +6,72 @@ import Image from "next/image";
 import useSWR from "swr";
 import axios from "axios";
 import Skeleton from "../components/Skeleton";
+import Snackbar from "../components/Snackbar";
+import Backdrop from "../components/Backdrop";
 
 export default function me() {
   const imageInput = useRef(null);
+  const [loading, setLoading] = useState(false);
   const [base64img, setBase64img] = useState("");
-  const [user, setUser] = useState(null);
+  const [updated, setUpdated] = useState(false);
   const [localUser, setLocalUser] = useState(null);
-  const [info, setInfo] = useState("");
-  const handleChange = (e) => {
-    if (e.target) {
-      if (e.target.name === "imgUrl") {
-        const img = e.target.files[0];
-        const type = e.target.files[0].type;
-        if (
-          type === "image/jpg" ||
-          type === "image/png" ||
-          type === "image/jpeg" ||
-          type === "image/jfif"
-        ) {
-          const formData = new FormData();
-          formData.append("file", img);
+  const [info, setInfo] = useState({});
+  const [readOnly, setReadOnly] = useState({
+    username: true,
+    email: true,
+    password: true,
+  });
+  const handleChange = async (e) => {
+    try {
+      if (e.target) {
+        if (e.target.name === "imgUrl") {
+          setLoading(true);
+
+          const img = e.target.files[0];
+          const type = e.target.files[0].type;
+          if (
+            type === "image/jpg" ||
+            type === "image/png" ||
+            type === "image/jpeg" ||
+            type === "image/jfif"
+          ) {
+            const formData = new FormData();
+            formData.append("file", img);
+            const { data } = await axios.post(
+              `${process.env.server}/image`,
+              formData
+            );
+
+            const result = await axios.put(
+              `${process.env.server}/user`,
+              {
+                profileImg: `${process.env.server}/${data.imageUrl}`,
+              },
+              {
+                headers: {
+                  authorization: "Bearer " + localUser?.token,
+                },
+              }
+            );
+            if (result) {
+              setUpdated(true);
+              setLoading(false);
+            }
+            var reader = new FileReader();
+            reader.onloadend = function () {
+              setBase64img(reader.result);
+            };
+            reader.readAsDataURL(img);
+          }
+        } else {
           setInfo({
             ...info,
-            [e.target.name]: formData,
+            [e.target.name]: e.target.value,
           });
-          var reader = new FileReader();
-          reader.onloadend = function () {
-            setBase64img(reader.result);
-          };
-          reader.readAsDataURL(img);
         }
-      } else {
-        setInfo({
-          ...info,
-          [e.target.name]: e.target.value,
-        });
       }
-    } else {
-      setInfo({ ...info, body: e });
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -57,7 +85,38 @@ export default function me() {
       return await axios.get(key);
     }
   );
-
+  const handleLogout = () => {
+    localStorage.clear();
+    router.reload();
+  };
+  const handleUpdate = async (e) => {
+    try {
+      if (!readOnly[e]) {
+        setLoading(true);
+        const result = await axios.put(
+          `${process.env.server}/user`,
+          { ...info },
+          {
+            headers: {
+              authorization: "Bearer " + localUser?.token,
+            },
+          }
+        );
+        if (result) {
+          setUpdated(true);
+          setLoading(false);
+        }
+      }
+      setReadOnly((readOnly) => {
+        return {
+          ...readOnly,
+          [e]: !readOnly[e],
+        };
+      });
+    } catch (err) {
+      setLoading(false);
+    }
+  };
   return (
     <div className={styles.mepage}>
       <div className={styles.hornav}>
@@ -83,8 +142,11 @@ export default function me() {
                 }}
                 className={`c-pointer imgUploadBox flex justify-center align-center`}
               >
-                {base64img !== "" ? (
-                  <Image src={base64img} layout="fill" />
+                {base64img !== "" || data.data.profile ? (
+                  <Image
+                    src={data.data.profile ? data.data.profile : base64img}
+                    layout="fill"
+                  />
                 ) : (
                   <p>Profile image</p>
                 )}
@@ -103,17 +165,19 @@ export default function me() {
                 margin="normal"
                 fullWidth
                 name="username"
+                onChange={handleChange}
                 variant="outlined"
                 InputProps={{
-                  readOnly: true,
+                  readOnly: readOnly.username,
                   endAdornment: (
                     <InputAdornment position="end">
                       <Button
                         size="small"
                         variant="contained"
-                        color="secondary"
+                        color={readOnly.username ? "secondary" : "info"}
+                        onClick={() => handleUpdate("username")}
                       >
-                        Edit
+                        {readOnly.username ? "Edit" : "Save"}
                       </Button>
                     </InputAdornment>
                   ),
@@ -138,17 +202,19 @@ export default function me() {
                 label="Email"
                 variant="outlined"
                 margin="normal"
+                onChange={handleChange}
                 defaultValue={data.data.email}
                 InputProps={{
-                  readOnly: true,
+                  readOnly: readOnly.email,
                   endAdornment: (
                     <InputAdornment position="end">
                       <Button
                         size="small"
                         variant="contained"
-                        color="secondary"
+                        color={readOnly.email ? "secondary" : "info"}
+                        onClick={() => handleUpdate("email")}
                       >
-                        Edit
+                        {readOnly.email ? "Edit" : "Save"}
                       </Button>
                     </InputAdornment>
                   ),
@@ -165,17 +231,19 @@ export default function me() {
                 label="Password"
                 defaultValue="changepassword"
                 margin="normal"
+                onChange={handleChange}
                 fullWidth
                 InputProps={{
-                  readOnly: true,
+                  readOnly: readOnly.password,
                   endAdornment: (
                     <InputAdornment position="end">
                       <Button
                         size="small"
                         variant="contained"
-                        color="secondary"
+                        color={readOnly.password ? "secondary" : "info"}
+                        onClick={() => handleUpdate("password")}
                       >
-                        Edit
+                        {readOnly.password ? "Edit" : "Save"}
                       </Button>
                     </InputAdornment>
                   ),
@@ -185,13 +253,30 @@ export default function me() {
               <Skeleton height="56px" width="100%" />
             )}
           </div>
+          {updated && (
+            <Snackbar
+              open={updated}
+              message="Updated successfully!"
+              color="success"
+              setOpen={setUpdated}
+            />
+          )}
+          {loading && <Backdrop loading={loading} />}
         </div>
-        <div className="flex space-between">
-          <Button variant="contained" color="secondary">
-            Cancel
-          </Button>
-          <Button variant="contained" color="success">
-            Save
+        <div className="flex flex-end mt-16">
+          <Button
+            variant="contained"
+            sx={{ widht: "max-content" }}
+            color={localUser ? "danger" : "success"}
+            onClick={
+              localUser
+                ? handleLogout
+                : () => {
+                    router.push("/auth");
+                  }
+            }
+          >
+            {localUser ? "Log out" : "Sign up"}
           </Button>
         </div>
       </div>

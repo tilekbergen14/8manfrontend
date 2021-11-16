@@ -10,6 +10,8 @@ import styles from "../styles/Navbar.module.css";
 import Drawer from "./Drawer";
 import Avatar from "@mui/material/Avatar";
 import Link from "next/link";
+import useSWR from "swr";
+import axios from "axios";
 
 export default function Navbar({ profileImg }) {
   const [left, setLeft] = React.useState(false);
@@ -25,6 +27,12 @@ export default function Navbar({ profileImg }) {
     }
   }, []);
 
+  const { data, error } = useSWR(
+    `${process.env.server}/user/${user?.id}`,
+    async (key) => {
+      return await axios.get(key);
+    }
+  );
   return (
     <Box sx={{ flexGrow: 1 }} className={styles.stick}>
       <AppBar position="sticky" className={styles.appbar}>
@@ -47,14 +55,12 @@ export default function Navbar({ profileImg }) {
               <Link href="/posts">
                 <li className={`${styles.link} c-pointer`}>Blogs</li>
               </Link>
-              <Link href="/users">
-                <li className={`${styles.link} c-pointer`}>Users</li>
-              </Link>
+
               <Link href={user ? "/me" : "/auth"}>
                 {user ? (
                   <Avatar
                     className="c-pointer"
-                    src={profileImg}
+                    src={data?.data.profile}
                     sx={{ marginLeft: "16px" }}
                   />
                 ) : (
@@ -83,7 +89,7 @@ export default function Navbar({ profileImg }) {
           </div>
         </Toolbar>
       </AppBar>
-      <Drawer toggleDrawer={toggleDrawer} left={left} />
+      <Drawer toggleDrawer={toggleDrawer} left={left} user={data?.data} />
     </Box>
   );
 }

@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import MyEditor from "../../components/Editor";
 import TextField from "@mui/material/TextField";
-import styles from "../../styles/CreatePost.module.css";
 import Button from "@mui/material/Button";
 import { convertToRaw, EditorState } from "draft-js";
 import Image from "next/image";
@@ -154,7 +153,7 @@ export default function createpost(props) {
           onClick={() => {
             imageInput.current?.click();
           }}
-          className={`c-pointer styles.imgUploadBox flex justify-center align-center`}
+          className={`c-pointer imgUploadBox flex justify-center align-center`}
         >
           {base64img !== "" ? (
             <Image src={base64img} layout="fill" />

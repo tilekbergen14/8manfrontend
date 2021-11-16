@@ -15,14 +15,7 @@ import {
 
 import Link from "next/link";
 
-export default function TemporaryDrawer({ toggleDrawer, left }) {
-  let user;
-  if (typeof window !== "undefined") {
-    let userString = localStorage.getItem("user");
-    if (userString) {
-      user = JSON.parse(userString);
-    }
-  }
+export default function TemporaryDrawer({ toggleDrawer, left, user }) {
   const list = () => (
     <Box
       sx={{ width: 500 }}
@@ -33,7 +26,7 @@ export default function TemporaryDrawer({ toggleDrawer, left }) {
         <Link href={user ? "/me" : "/auth"}>
           <ListItemButton>
             <ListItemIcon>
-              <Avatar src={user && user.imgUrl} />
+              <Avatar src={user && user.profile} />
             </ListItemIcon>
             <ListItemText primary={user ? user.username : "Log in"} />
           </ListItemButton>
@@ -59,30 +52,12 @@ export default function TemporaryDrawer({ toggleDrawer, left }) {
             <ListItemText primary="About Us" />
           </ListItem>
         </Link>
-        <ListItem button key="aboutus">
-          <Button
-            variant="contained"
-            color={user ? "danger" : "success"}
-            onClick={
-              user
-                ? logout
-                : () => {
-                    router.push("/auth");
-                  }
-            }
-          >
-            {user ? "Log out" : "Sign up"}
-          </Button>
-        </ListItem>
       </List>
       <Divider />
     </Box>
   );
   const router = useRouter();
-  const logout = () => {
-    localStorage.clear();
-    router.reload();
-  };
+
   return (
     <div>
       <Drawer anchor="left" open={left} onClose={() => toggleDrawer(false)}>
