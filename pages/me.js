@@ -77,7 +77,7 @@ export default function me() {
 
   useEffect(() => {
     setLocalUser(JSON.parse(localStorage.getItem("user")));
-  }, []);
+  }, [base64img]);
 
   const { data, error } = useSWR(
     `${process.env.server}/user/${localUser?.id}`,
@@ -144,7 +144,7 @@ export default function me() {
               >
                 {base64img !== "" || data.data.profile ? (
                   <Image
-                    src={data.data.profile ? data.data.profile : base64img}
+                    src={base64img ? base64img : data.data.profile}
                     layout="fill"
                   />
                 ) : (

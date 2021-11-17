@@ -10,22 +10,33 @@ import { Avatar, ListItemIcon, ListItemText } from "@mui/material";
 import moment from "moment";
 import Likes from "../../components/Likes";
 import MyEditor from "../../components/Editor";
-import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
+import { EditorState, convertFromRaw, convertToRaw, Editor } from "draft-js";
 import axios from "axios";
 import Backdrop from "../../components/Backdrop";
 import Languages from "../../components/Languages";
 import Delete from "../../components/Delete";
 import Snackbar from "../../components/Snackbar";
+import MoreHoriz from "@mui/icons-material/MoreHoriz";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import EditQuestion from "../../components/Askquestion";
+import Edit from "@mui/icons-material/Edit";
 
 export default function questions({ question }) {
   const toolbar = ["blockType", "list", "link"];
   const router = useRouter();
   const [deleted, setDeleted] = useState(false);
+  const [questionDeleted, setQuestionDeleted] = useState(false);
   const [answers, setAnswers] = useState(
     question.answers ? question.answers : []
   );
+  const [questionEdit, setQuestionEdit] = useState(false);
+  const [answerEdit, setAnswerEdit] = useState(false);
+  const [questionEdited, setQuestionEdited] = useState(false);
+  const [answerEdited, setAnswerEdited] = useState(false);
   const [error, setError] = useState(null);
   const [answerAdded, setAnswerAdded] = useState(false);
+  const [answerLength, setAnswerLength] = useState(question?.answers?.length);
   const [loading, setLoading] = useState(false);
   const blockType = ["Normal", "Blockquote", "Code"];
   const [answer, setAnswer] = useState({
@@ -40,7 +51,10 @@ export default function questions({ question }) {
       Prism.highlightAll();
       setUser(JSON.parse(localStorage.getItem("user")));
     }
-  }, []);
+    setAnswers(question?.answers);
+    setAnswer({ ...answer, editorState: EditorState.createEmpty() });
+    setAnswerLength(question?.answers?.length);
+  }, [question]);
 
   let options = {
     blockRenderers: {
@@ -75,7 +89,7 @@ export default function questions({ question }) {
           }
         );
         if (result) {
-          router.reload();
+          router.replace(router.asPath);
           setAnswerAdded(true);
         }
       }
@@ -89,6 +103,7 @@ export default function questions({ question }) {
       console.log(err);
     }
   };
+
   return (
     <div className={styles.postsPage}>
       <div className={styles.first}>
@@ -123,18 +138,49 @@ export default function questions({ question }) {
             className={styles.body}
             dangerouslySetInnerHTML={{ __html: body }}
           ></div>
+          <div className="flex  mb-16 flex-end">
+            <EditIcon
+              size="small"
+              sx={{ color: "#757575" }}
+              className="hover c-pointer"
+              onClick={() => {
+                setQuestionEdit(true);
+              }}
+            />
+            {questionEdit && (
+              <EditQuestion
+                setAskquestion={setQuestionEdit}
+                setQuestionCreated={setQuestionEdited}
+                existedQuestion={question}
+              />
+            )}
+            {questionEdited && (
+              <Snackbar
+                setOpen={setQuestionEdited}
+                open={questionEdited}
+                message="Question edited successfully!"
+                color="success"
+              />
+            )}
+            <Delete
+              wheredelete="question"
+              setDeleted={setQuestionDeleted}
+              id={question.id}
+              color="#757575"
+              questionDelete={true}
+            />
+          </div>
         </div>
-        {question.answers && question.answers.length === 0 ? (
+        {answerLength === 0 ? (
           <p className={styles.blockquote}>
             There is no answers yet! Be first one to answer
           </p>
         ) : (
           <div className="flex space-between">
             <h3 className="title" style={{ margin: "8px 0" }}>
-              {(question.answers && question.answers.length === 0) ||
-              question.answers.length === 1
-                ? question.answers.length + " Answer"
-                : question.answers.length + " Answers"}
+              {answerLength === 1
+                ? answerLength + " Answer"
+                : answerLength + " Answers"}
             </h3>
             <div>
               <Button variant="text" sx={{ textTransform: "none" }}>
@@ -147,7 +193,7 @@ export default function questions({ question }) {
           </div>
         )}
         {answers.map(
-          (answer) =>
+          (answer, index) =>
             answer.body !== null && (
               <div className={styles.answer} key={answer.id}>
                 <div
@@ -159,7 +205,7 @@ export default function questions({ question }) {
                 <div className="flex space-between">
                   <div className="flex align-center">
                     <ListItemIcon>
-                      <Avatar variant="rounded" />
+                      <Avatar variant="rounded" src={answer?.authorProfile} />
                     </ListItemIcon>
                     <ListItemText
                       sx={{ margin: 0 }}
@@ -168,20 +214,41 @@ export default function questions({ question }) {
                     />
                   </div>
                   {user &&
-                    (user.id === answer.author_id ? (
-                      <div className="grid grid-center grid-column-1fr b-r-2">
-                        <Delete
-                          wheredelete="answer"
-                          setDeleted={setDeleted}
-                          setAnswers={setAnswers}
-                          id={answer.id}
-                        />
-                        <Likes
-                          likewhere="answer"
-                          id={answer.id}
-                          isLiked={answer.userLiked}
-                          likeNumber={answer.likes}
-                        />
+                    (user.id === answer?.author_id ? (
+                      <div className="grid grid-center b-r-2">
+                        <div className="flex flex-end">
+                          <EditIcon
+                            size="small"
+                            sx={{ color: "#757575" }}
+                            className="hover c-pointer"
+                            onClick={() => {
+                              setAnswerEdit(true);
+                            }}
+                          />
+                          <Delete
+                            wheredelete="answer"
+                            setDeleted={setDeleted}
+                            setAnswers={setAnswers}
+                            setAnswerLength={setAnswerLength}
+                            id={answer.id}
+                            color="#757575"
+                          />
+                          {answerEdit && (
+                            <EditQuestion
+                              setAskquestion={setAnswerEdit}
+                              setQuestionCreated={setAnswerEdited}
+                              existedAnswer={answer}
+                            />
+                          )}
+                          {answerEdited && (
+                            <Snackbar
+                              setOpen={setAnswerEdited}
+                              open={answerEdited}
+                              message="Answer edited successfully!"
+                              color="success"
+                            />
+                          )}
+                        </div>
                       </div>
                     ) : (
                       <Likes
@@ -198,7 +265,7 @@ export default function questions({ question }) {
         <h3 className="title" style={{ margin: "8px 0 0 0" }}>
           Write your answer
         </h3>
-        <div className={styles.editor}>
+        <div className={styles.editor} id="editor">
           <MyEditor
             onEditorChange={handleChange}
             toolbar={toolbar}
@@ -234,9 +301,20 @@ export default function questions({ question }) {
         <Snackbar
           setOpen={setDeleted}
           open={deleted}
-          message="Comment deleted successfully!"
+          message="Comment eleted successfully!"
           color="danger"
         />
+      )}
+      {questionDeleted && (
+        <div>
+          {router.push("/questions")}
+          <Snackbar
+            setOpen={setQuestionDeleted}
+            open={questionDeleted}
+            message="Question eleted successfully!"
+            color="danger"
+          />
+        </div>
       )}
     </div>
   );

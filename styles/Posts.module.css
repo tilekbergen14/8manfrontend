@@ -51,7 +51,7 @@
   font-weight: 400;
 }
 .body {
-  margin: 16px 0;
+  margin-top: 16px;
 }
 .editor {
   height: 300px;
@@ -69,6 +69,9 @@
   padding: 24px;
   border-radius: 8px;
 }
+
+/*******styles**********/
+
 @media screen and (max-width: 1000px) {
   .postsPage {
     grid-template-columns: 0.3fr 0.9fr;

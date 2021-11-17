@@ -8,10 +8,25 @@ import adbox from "../../public/images/adbox.png";
 import QuestionModal from "../../components/Askquestion";
 import Snackbar from "../../components/Snackbar";
 import Languages from "../../components/Languages";
+import CircularProgress from "@mui/material/CircularProgress";
 
-export default function questions({ questions }) {
+export default function questions(props) {
+  const [questions, setQuestions] = useState([...props.questions]);
   const [askquestion, setAskquestion] = useState(false);
   const [questionCreated, setQuestionCreated] = useState(false);
+  const [loadmore, setLoadmore] = useState(false);
+  const handleLoadMore = async () => {
+    try {
+      setLoadmore(true);
+      const { data } = await axios.get(
+        `${process.env.server}/question?questions=${questions?.length}`
+      );
+      setQuestions([...questions, ...data]);
+      setLoadmore(false);
+    } catch (err) {
+      setLoadmore(false);
+    }
+  };
   return (
     <div className={styles.postsPage}>
       {askquestion && (
@@ -54,8 +69,22 @@ export default function questions({ questions }) {
           </Button>
         </div>
         {questions.map((question) => (
-          <Question key={question.id} question={question} question={question} />
+          <Question key={question.id} question={question} />
         ))}
+        <div className="flex justify-center m-8">
+          {loadmore ? (
+            <CircularProgress color="inherit" />
+          ) : (
+            <p
+              className="c-pointer m-0 smallTitle"
+              onClick={() => {
+                handleLoadMore();
+              }}
+            >
+              Load more
+            </p>
+          )}
+        </div>
       </div>
       <div className={styles.third}>
         <Image src={adbox} layout="fill" className="b-radius-8" />

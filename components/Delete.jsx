@@ -2,16 +2,33 @@ import React, { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button } from "@mui/material";
 import axios from "axios";
+import { useRouter } from "next/router";
 
-export default function Delete({ wheredelete, setDeleted, setAnswers, id }) {
+export default function Delete({
+  wheredelete,
+  questionDelete,
+  setDeleted,
+  setAnswers,
+  id,
+  color,
+  setAnswerLength,
+}) {
   const [verify, setVerify] = useState(false);
-
+  const router = useRouter();
   const handleDelete = async () => {
     try {
       setVerify(false);
       setDeleted(true);
-      setAnswers((answers) => answers.filter((answer) => answer.id !== id));
-      axios.delete(`${process.env.server}/answer/${id}`);
+      setAnswerLength && setAnswerLength((answerLength) => answerLength - 1);
+      setAnswers &&
+        setAnswers((answers) => answers.filter((answer) => answer.id !== id));
+      const result = await axios.delete(
+        `${process.env.server}/${wheredelete}/${id}`
+      );
+
+      if (result && questionDelete) {
+        router.push("/");
+      }
     } catch (err) {
       console.log(err);
     }
@@ -20,7 +37,8 @@ export default function Delete({ wheredelete, setDeleted, setAnswers, id }) {
     <span>
       <DeleteIcon
         color="danger"
-        className="c-pointer"
+        sx={{ color: color }}
+        className="c-pointer hover"
         onClick={() => setVerify(true)}
       />
       {verify && (
