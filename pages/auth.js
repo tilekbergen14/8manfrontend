@@ -15,7 +15,8 @@ export default function auth() {
   });
   const [signin, setSignin] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [loadingGoogle, setLoadingGoogle] = useState(false);
+  const [verifyEmail, setVerifyEmail] = useState(false);
+  const [forgetpass, setForgetpass] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
   const [userData, setUserData] = useState({
@@ -36,6 +37,9 @@ export default function auth() {
 
   const handleLogin = () => {
     setSignin((signin) => !signin);
+    setLoading(false);
+    setVerifyEmail(false);
+    setForgetpass(false);
   };
 
   const handleAuth = async (e) => {
@@ -56,18 +60,20 @@ export default function auth() {
           localStorage.setItem("user", JSON.stringify(result.data));
         }
         router.push("/");
+        router.reload();
       }
       if (userData.password === userData.password2) {
         const result = await axios.post(`${process.env.server}/user/register`, {
           ...userData,
         });
         if (result) {
-          localStorage.setItem("user", JSON.stringify(result.data));
+          setVerifyEmail(true);
+          console.log(result);
         }
         setLoading(false);
-        router.push("/");
-      } else {
-        setError("passwords does not match!");
+      }
+      if (userData.password !== userData.password2) {
+        setError("Passwords does not match!");
         setLoading(false);
       }
     } catch (err) {
@@ -82,9 +88,29 @@ export default function auth() {
     user = localStorage.getItem("user");
     user && router.push("/");
   }
+
+  const handleForgetpass = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const result = await axios.post(
+        `${process.env.server}/user/forgetpassword`,
+        { email: userData.email }
+      );
+      if (result) {
+        console.log(result);
+        setForgetpass(false);
+        setVerifyEmail(true);
+      }
+      console.log(result);
+    } catch (err) {
+      setError(err?.response ? err.response.data : "Something went wrong!");
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
-      {" "}
       <Grid
         container
         sx={{
@@ -107,18 +133,14 @@ export default function auth() {
             flexDirection: "column",
           }}
         >
-          <Typography sx={{ color: "#e41749", mb: 1 }} variant="body2">
-            {error && "* " + error}
-          </Typography>
-
-          <form
-            onSubmit={handleAuth}
-            style={{ display: "flex", flexDirection: "column" }}
-          >
-            {!signin && (
+          {forgetpass ? (
+            <div className="flex flex-column ">
+              <Typography sx={{ color: "#e41749", mb: 1 }} variant="body2">
+                {error && "* " + error}
+              </Typography>
               <TextField
                 id="email"
-                label="Email"
+                label="Please enter your email"
                 required
                 type="email"
                 variant="outlined"
@@ -129,125 +151,156 @@ export default function auth() {
                   setUserData({ ...userData, email: e.target.value })
                 }
               />
-            )}
+              <Button
+                onClick={handleForgetpass}
+                type="submit"
+                variant="contained"
+                color="success"
+                disabled={loading ? true : false}
+                sx={{ color: "white", marginTop: "1rem" }}
+              >
+                {loading ? (
+                  <div>
+                    <CircularProgress
+                      size={16}
+                      color="primary"
+                      sx={{ marginRight: 1 }}
+                    />{" "}
+                    Loading
+                  </div>
+                ) : (
+                  "Send"
+                )}
+              </Button>
+            </div>
+          ) : verifyEmail ? (
+            <div className="flex justify-center">
+              We sent mail to you please check your email!
+            </div>
+          ) : (
+            <>
+              <Typography sx={{ color: "#e41749", mb: 1 }} variant="body2">
+                {error && "* " + error}
+              </Typography>
 
-            <TextField
-              id="username"
-              required
-              label={signin ? "Username or email" : "Username"}
-              variant="outlined"
-              color="primary"
-              autoComplete="off"
-              margin="dense"
-              onChange={(e) =>
-                setUserData({ ...userData, username: e.target.value })
-              }
-            />
-            <TextField
-              id="password1"
-              required
-              label="Password"
-              variant="outlined"
-              onChange={(e) =>
-                setUserData({ ...userData, password: e.target.value })
-              }
-              color="primary"
-              margin="dense"
-              type={visibility.password1 ? "password" : "text"}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={() => handleVisibility(1)}
-                      edge="end"
-                    >
-                      {visibility.password1 ? (
-                        <Visibility />
-                      ) : (
-                        <VisibilityOff />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            {!signin && (
-              <TextField
-                required
-                id="password2"
-                label="Confirm Password"
-                variant="outlined"
-                color="primary"
-                type={visibility.password2 ? "password" : "text"}
-                margin="dense"
-                onChange={(e) =>
-                  setUserData({ ...userData, password2: e.target.value })
-                }
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        edge="end"
-                        onClick={() => handleVisibility(2)}
-                      >
-                        {visibility.password2 ? (
-                          <Visibility />
-                        ) : (
-                          <VisibilityOff />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            )}
-
-            <Button
-              type="submit"
-              variant="contained"
-              color="success"
-              disabled={loading ? true : false}
-              sx={{ color: "white", marginTop: "1rem" }}
-            >
-              {loading ? (
-                <div>
-                  <CircularProgress
-                    size={16}
+              <form
+                onSubmit={handleAuth}
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                {!signin && (
+                  <TextField
+                    id="email"
+                    label="Email"
+                    required
+                    type="email"
+                    variant="outlined"
+                    autoComplete="off"
                     color="primary"
-                    sx={{ marginRight: 1 }}
-                  />{" "}
-                  Loading
-                </div>
-              ) : signin ? (
-                "Sign in"
-              ) : (
-                "Sign up"
-              )}
-            </Button>
-          </form>
-          <Button
-            variant="contained"
-            disabled={loadingGoogle ? true : false}
-            color="danger"
-            sx={{
-              marginTop: "1rem",
-            }}
-          >
-            {loadingGoogle ? (
-              <CircularProgress
-                size={16}
-                color="primary"
-                sx={{ marginRight: 1 }}
-              />
-            ) : signin ? (
-              "Sign in"
-            ) : (
-              "Sign Up"
-            )}{" "}
-            {loadingGoogle ? "Loading" : "with google"}
-          </Button>
+                    margin="dense"
+                    onChange={(e) =>
+                      setUserData({ ...userData, email: e.target.value })
+                    }
+                  />
+                )}
+
+                <TextField
+                  id="username"
+                  required
+                  label={signin ? "Username or email" : "Username"}
+                  variant="outlined"
+                  color="primary"
+                  autoComplete="off"
+                  margin="dense"
+                  onChange={(e) =>
+                    setUserData({ ...userData, username: e.target.value })
+                  }
+                />
+                <TextField
+                  id="password1"
+                  required
+                  label="Password"
+                  variant="outlined"
+                  onChange={(e) =>
+                    setUserData({ ...userData, password: e.target.value })
+                  }
+                  color="primary"
+                  margin="dense"
+                  type={visibility.password1 ? "password" : "text"}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={() => handleVisibility(1)}
+                          edge="end"
+                        >
+                          {visibility.password1 ? (
+                            <Visibility />
+                          ) : (
+                            <VisibilityOff />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                {!signin && (
+                  <TextField
+                    required
+                    id="password2"
+                    label="Confirm Password"
+                    variant="outlined"
+                    color="primary"
+                    type={visibility.password2 ? "password" : "text"}
+                    margin="dense"
+                    onChange={(e) =>
+                      setUserData({ ...userData, password2: e.target.value })
+                    }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            edge="end"
+                            onClick={() => handleVisibility(2)}
+                          >
+                            {visibility.password2 ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="success"
+                  disabled={loading ? true : false}
+                  sx={{ color: "white", marginTop: "1rem" }}
+                >
+                  {loading ? (
+                    <div>
+                      <CircularProgress
+                        size={16}
+                        color="primary"
+                        sx={{ marginRight: 1 }}
+                      />{" "}
+                      Loading
+                    </div>
+                  ) : signin ? (
+                    "Sign in"
+                  ) : (
+                    "Sign up"
+                  )}
+                </Button>
+              </form>
+            </>
+          )}
         </Paper>
         <Typography variant="body1" sx={{ m: 1 }}>
           {signin ? "Don't have an account?" : "Already have an account"}
@@ -256,6 +309,18 @@ export default function auth() {
             {signin ? "Sign up" : "Sign in"}
           </span>
         </Typography>
+        {!forgetpass && (
+          <Typography variant="body1">
+            <span
+              onClick={() => {
+                setForgetpass(true);
+              }}
+              className="link"
+            >
+              Forget password
+            </span>
+          </Typography>
+        )}
       </Grid>
     </div>
   );

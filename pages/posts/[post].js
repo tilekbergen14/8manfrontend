@@ -122,6 +122,9 @@ export default function Post({ post }) {
             className={styles.body}
             dangerouslySetInnerHTML={{ __html: body }}
           ></div>
+          <div className={styles.readmore}>
+            <p className="title">Read more</p>
+          </div>
         </div>
 
         <div className={styles.additional}></div>

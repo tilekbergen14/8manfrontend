@@ -8,6 +8,7 @@ import axios from "axios";
 import Skeleton from "../components/Skeleton";
 import Snackbar from "../components/Snackbar";
 import Backdrop from "../components/Backdrop";
+import { useRouter } from "next/router";
 
 export default function me() {
   const imageInput = useRef(null);
@@ -21,6 +22,11 @@ export default function me() {
     email: true,
     password: true,
   });
+  const router = useRouter();
+  if (typeof window !== "undefined") {
+    const user = localStorage.getItem("user");
+    !user && router.push("/auth");
+  }
   const handleChange = async (e) => {
     try {
       if (e.target) {

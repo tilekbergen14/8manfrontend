@@ -16,6 +16,7 @@ export default function CustomizedSnackbars({
   message,
   vertical,
   horizontal,
+  autoHideDuration,
 }) {
   const [sopen, setSopen] = useState(open);
   const handleClose = (event, reason) => {
@@ -35,7 +36,7 @@ export default function CustomizedSnackbars({
           horizontal: horizontal ? horizontal : "center",
         }}
         open={sopen}
-        autoHideDuration={3000}
+        autoHideDuration={autoHideDuration ? parseInt(autoHideDuration) : 3000}
         onClose={handleClose}
       >
         <Alert onClose={handleClose} color={color} sx={{ width: "100%" }}>

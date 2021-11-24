@@ -13,7 +13,7 @@
 .section {
   display: grid;
   grid-template-columns: 0.7fr 0.3fr;
-  transform: translateY(-20%);
+  transform: translateY(-16%);
   padding: 0 20px;
 }
 .post {
@@ -76,9 +76,17 @@
   padding: 0 4px;
   position: relative;
 }
+.readmore {
+  margin-top: 48px;
+}
 @media screen and (max-width: 1100px) {
   .section {
     grid-template-columns: 1fr;
+  }
+  .section {
+    padding: 0 4px;
+    top: 24px;
+    transform: translateY(-10%);
   }
 }
 
