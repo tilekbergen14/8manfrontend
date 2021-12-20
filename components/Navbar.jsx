@@ -30,7 +30,9 @@ export default function Navbar({ profileImg }) {
   const { data, error } = useSWR(
     `${process.env.server}/user/${user?.id}`,
     async (key) => {
-      return await axios.get(key);
+      if (user) {
+        return await axios.get(key);
+      }
     }
   );
   return (

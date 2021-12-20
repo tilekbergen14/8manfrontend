@@ -1,0 +1,10 @@
+.page {
+  height: 100%;
+  position: relative;
+}
+.gridBox {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 16px;
+  margin: 24px 0;
+}

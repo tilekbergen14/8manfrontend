@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { EditorState, convertToRaw } from "draft-js";
+import { convertToRaw } from "draft-js";
 import styles from "../styles/Editor.module.css";
 import "../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import axios from "axios";
@@ -73,9 +73,10 @@ export default class ControlledEditor extends Component {
         <Editor
           editorState={editorState}
           toolbarClassName={styles.toolbar}
-          wrapperClassName={
-            this.props.wrapper ? styles.smallWrapper : styles.wrapper
-          }
+          wrapperClassName={styles.wrapper}
+          wrapperStyle={{
+            height: this.props?.height ? this.props.height : "auto",
+          }}
           editorClassName={styles.editor}
           onEditorStateChange={this.onEditorStateChange}
           toolbar={{

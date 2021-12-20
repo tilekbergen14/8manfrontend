@@ -11,7 +11,9 @@ export default function Delete({
   setAnswers,
   id,
   color,
+  setCreateLesson,
   setAnswerLength,
+  fullWidth,
 }) {
   const [verify, setVerify] = useState(false);
   const router = useRouter();
@@ -29,27 +31,33 @@ export default function Delete({
       if (result && questionDelete) {
         router.push("/");
       }
+      setCreateLesson && setCreateLesson(false);
     } catch (err) {
       console.log(err);
     }
   };
   return (
     <span>
-      <DeleteIcon
+      <Button
+        onClick={() => setCreateLesson(true)}
+        variant="contained"
         color="danger"
-        sx={{ color: color }}
-        className="c-pointer hover"
         onClick={() => setVerify(true)}
-      />
+        size="small"
+        fullWidth={fullWidth ? true : false}
+      >
+        Delete
+      </Button>
       {verify && (
         <div style={styles.box}>
           <div style={styles.modal}>
-            Do you really wanna delete this comment!
+            Do you really wanna delete this!
             <div style={styles.buttons}>
               <Button
                 variant="contained"
                 color="secondary"
                 onClick={() => setVerify(false)}
+                size="small"
               >
                 Cancel
               </Button>

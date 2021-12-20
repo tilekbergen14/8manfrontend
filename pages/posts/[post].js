@@ -10,10 +10,13 @@ import Prism from "prismjs";
 import { stateToHTML } from "draft-js-export-html";
 import { convertFromRaw } from "draft-js";
 import moment from "moment";
+import Footer from "../../components/Footer";
+import Card from "../../components/Card";
 
 export default function Post({ post }) {
   const [liked, setLiked] = useState(post.liked);
   const [likes, setLikes] = useState(post.likes);
+  const [relatedposts, setRelatedposts] = useState(null);
   const handleLikes = () => {
     setLiked((liked) => !liked);
     if (liked) {
@@ -50,9 +53,18 @@ export default function Post({ post }) {
   };
   const body = stateToHTML(convertFromRaw(post.body), options);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (typeof window !== "undefined") {
       Prism.highlightAll();
+    }
+    try {
+      const result = await axios.get(
+        `${process.env.server}/post/relatedposts?limit=2?currentpost=${post.id}`
+      );
+      console.log(result.data);
+      result && setRelatedposts(result.data);
+    } catch (err) {
+      console.log(err);
     }
   }, []);
 
@@ -62,72 +74,81 @@ export default function Post({ post }) {
         <Image className={styles.wave} src={wave} layout="fill" />
       </div>
       <div className={styles.section}>
-        <div className={styles.post}>
-          <div className={styles.header}>
-            <div className={styles.postInfo}>
-              <h1 className={styles.title}>{post.title}</h1>
-              <div
-                className="flex space-between"
-                style={{ marginBottom: "16px" }}
-              >
-                <p className={`${styles.smallText} ${styles.secondary}`}>
-                  {post.author} | {moment(post.createdAt).fromNow()}
-                </p>
+        <div className={styles.twoGrid}>
+          <div className={styles.post}>
+            <div className={styles.header}>
+              <div className={styles.postInfo}>
+                <h1 className={styles.title}>{post.title}</h1>
+                <div
+                  className="flex space-between"
+                  style={{ marginBottom: "16px" }}
+                >
+                  <p className={`${styles.smallText} ${styles.secondary}`}>
+                    {post.author} | {moment(post.createdAt).fromNow()}
+                  </p>
+                </div>
+                <div className={styles.tags}>
+                  {post.tags.map((tag) => (
+                    <Button
+                      key={tag}
+                      variant="outlined"
+                      color="success"
+                      sx={{ margin: "4px" }}
+                      fontSize="small"
+                    >
+                      {tag}
+                    </Button>
+                  ))}
+                </div>
               </div>
-              <div className={styles.tags}>
-                {post.tags.map((tag) => (
-                  <Button
-                    key={tag}
-                    variant="outlined"
-                    color="success"
-                    sx={{ margin: "4px" }}
-                    fontSize="small"
-                  >
-                    {tag}
-                  </Button>
-                ))}
+              <div className={styles.postImage}>
+                <Image
+                  src={
+                    post.imgUrl ? `${process.env.server}/${post.imgUrl}` : "/"
+                  }
+                  layout="fill"
+                  className={styles.image}
+                />
+                <div className={styles.likes}>
+                  {liked ? (
+                    <FavoriteIcon
+                      color="danger"
+                      className="c-pointer"
+                      fontSize="small"
+                      sx={{ marginRight: "4px" }}
+                      onClick={handleLikes}
+                    />
+                  ) : (
+                    <FavoriteBorderIcon
+                      color="danger"
+                      className="c-pointer"
+                      fontSize="small"
+                      sx={{ marginRight: "4px" }}
+                      onClick={handleLikes}
+                    />
+                  )}
+                  <p className={styles.smallText}>
+                    {likes} {likes === 0 || likes === 1 ? "like" : "likes"}
+                  </p>
+                </div>
               </div>
             </div>
-            <div className={styles.postImage}>
-              <Image
-                src={post.imgUrl ? `${process.env.server}/${post.imgUrl}` : "/"}
-                layout="fill"
-                className={styles.image}
-              />
-              <div className={styles.likes}>
-                {liked ? (
-                  <FavoriteIcon
-                    color="danger"
-                    className="c-pointer"
-                    fontSize="small"
-                    sx={{ marginRight: "4px" }}
-                    onClick={handleLikes}
-                  />
-                ) : (
-                  <FavoriteBorderIcon
-                    color="danger"
-                    className="c-pointer"
-                    fontSize="small"
-                    sx={{ marginRight: "4px" }}
-                    onClick={handleLikes}
-                  />
-                )}
-                <p className={styles.smallText}>
-                  {likes} {likes === 0 || likes === 1 ? "like" : "likes"}
-                </p>
+            <div
+              className={styles.body}
+              dangerouslySetInnerHTML={{ __html: body }}
+            ></div>
+            <div className="divider my-8"></div>
+            <div className={styles.readmore}>
+              <p className="title">Related posts</p>
+              <div className={styles.morePosts}>
+                {relatedposts &&
+                  relatedposts.map((post) => <Card post={post} />)}
               </div>
             </div>
           </div>
-          <div
-            className={styles.body}
-            dangerouslySetInnerHTML={{ __html: body }}
-          ></div>
-          <div className={styles.readmore}>
-            <p className="title">Read more</p>
-          </div>
+          <div className={styles.additional}></div>
         </div>
-
-        <div className={styles.additional}></div>
+        <Footer />
       </div>
     </div>
   );

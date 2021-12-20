@@ -2,17 +2,10 @@
   margin: 24px 0;
   box-shadow: 2px 2px 4px #757575;
   position: relative;
-  max-height: 90vh;
-  overflow-y: scroll;
+  overflow-y: hidden;
+  height: 100%;
 }
-.smallWrapper {
-  margin: 8px 0;
-  box-shadow: 2px 2px 4px #757575;
-  position: relative;
-  height: 300px;
-  display: flex;
-  flex-direction: column;
-}
+
 .editor {
   background-color: #fff;
   padding: 0 8px;
@@ -20,6 +13,7 @@
   font-size: 18px;
   line-height: 1.5;
   flex: 1;
+  height: calc(100% - 68px) !important;
 }
 
 .toolbar {

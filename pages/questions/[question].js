@@ -138,7 +138,7 @@ export default function questions({ question }) {
             className={styles.body}
             dangerouslySetInnerHTML={{ __html: body }}
           ></div>
-          <div className="flex  mb-16 flex-end">
+          <div className="flex  mb-16 space-between align-center">
             <EditIcon
               size="small"
               sx={{ color: "#757575" }}
@@ -216,7 +216,7 @@ export default function questions({ question }) {
                   {user &&
                     (user.id === answer?.author_id ? (
                       <div className="grid grid-center b-r-2">
-                        <div className="flex flex-end">
+                        <div className="flex flex-end align-center">
                           <EditIcon
                             size="small"
                             sx={{ color: "#757575" }}

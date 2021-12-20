@@ -1,5 +1,22 @@
-.admin {
-  padding: 24px;
+.page {
+  display: flex;
+  height: 100%;
+}
+.hornav {
+  width: 256px;
+}
+.fixed {
+  width: 100%;
+  width: 256px;
+  position: fixed;
+  color: #fff;
+  background-color: #17203e;
+  height: calc(100vh - 72px);
+}
+.body {
+  height: 100%;
+  flex: 1;
+  padding: 16px 16px 0 16px;
 }
 
 @media screen and (max-width: 900px) {

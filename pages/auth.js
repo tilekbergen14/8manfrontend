@@ -15,7 +15,7 @@ export default function auth() {
   });
   const [signin, setSignin] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [verifyEmail, setVerifyEmail] = useState(false);
+  const [verifyEmail, setVerifyEmail] = useState("");
   const [forgetpass, setForgetpass] = useState(false);
   const [error, setError] = useState(null);
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function auth() {
   const handleLogin = () => {
     setSignin((signin) => !signin);
     setLoading(false);
-    setVerifyEmail(false);
+    setVerifyEmail("");
     setForgetpass(false);
   };
 
@@ -62,21 +62,21 @@ export default function auth() {
         router.push("/");
         router.reload();
       }
-      if (userData.password === userData.password2) {
+      if (userData.password !== userData.password2 && !signin) {
+        setError("Passwords does not match!");
+        setLoading(false);
+      }
+      if (userData.password === userData.password2 && !signin) {
         const result = await axios.post(`${process.env.server}/user/register`, {
           ...userData,
         });
         if (result) {
-          setVerifyEmail(true);
-          console.log(result);
+          setVerifyEmail(result?.data ? result.data : "Something went wrong!");
         }
-        setLoading(false);
       }
-      if (userData.password !== userData.password2) {
-        setError("Passwords does not match!");
-        setLoading(false);
-      }
+      setLoading(false);
     } catch (err) {
+      console.log(err);
       setError(
         err.response ? err.response.data : "Please try again after some time!"
       );
@@ -98,11 +98,9 @@ export default function auth() {
         { email: userData.email }
       );
       if (result) {
-        console.log(result);
         setForgetpass(false);
-        setVerifyEmail(true);
+        setVerifyEmail("Please check your email!");
       }
-      console.log(result);
     } catch (err) {
       setError(err?.response ? err.response.data : "Something went wrong!");
       setLoading(false);
@@ -173,10 +171,8 @@ export default function auth() {
                 )}
               </Button>
             </div>
-          ) : verifyEmail ? (
-            <div className="flex justify-center">
-              We sent mail to you please check your email!
-            </div>
+          ) : verifyEmail !== "" ? (
+            <div className="flex justify-center">{verifyEmail}</div>
           ) : (
             <>
               <Typography sx={{ color: "#e41749", mb: 1 }} variant="body2">

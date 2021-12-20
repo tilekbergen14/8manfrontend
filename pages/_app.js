@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 
 const theme = createTheme({
   typography: {
-    fontFamily: "Montserrat Alternates sans-serif",
+    fontFamily: "inherit",
   },
   palette: {
     primary: {
@@ -32,6 +32,10 @@ const theme = createTheme({
     green: {
       main: "#264653",
       contrastText: "#000",
+    },
+    text: {
+      main: "#365acf",
+      contrastText: "#365acf",
     },
   },
 });
