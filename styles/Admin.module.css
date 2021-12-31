@@ -9,9 +9,10 @@
   width: 100%;
   width: 256px;
   position: fixed;
-  color: #fff;
-  background-color: #17203e;
+  color: #111f4d;
+  background-color: #fff;
   height: calc(100vh - 72px);
+  overflow-y: scroll;
 }
 .body {
   height: 100%;

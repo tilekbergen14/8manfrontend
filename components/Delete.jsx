@@ -14,18 +14,20 @@ export default function Delete({
   setCreateLesson,
   setAnswerLength,
   fullWidth,
+  additional,
 }) {
   const [verify, setVerify] = useState(false);
   const router = useRouter();
   const handleDelete = async () => {
     try {
       setVerify(false);
-      setDeleted(true);
+      setDeleted && setDeleted(true);
+
       setAnswerLength && setAnswerLength((answerLength) => answerLength - 1);
       setAnswers &&
         setAnswers((answers) => answers.filter((answer) => answer.id !== id));
       const result = await axios.delete(
-        `${process.env.server}/${wheredelete}/${id}`
+        `${process.env.server}/${wheredelete}/${id}?${additional}`
       );
 
       if (result && questionDelete) {
@@ -33,7 +35,7 @@ export default function Delete({
       }
       setCreateLesson && setCreateLesson(false);
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
     }
   };
   return (

@@ -12,6 +12,7 @@ import { convertFromRaw } from "draft-js";
 import moment from "moment";
 import Footer from "../../components/Footer";
 import Card from "../../components/Card";
+import options from "../../functions/editorOptions";
 
 export default function Post({ post }) {
   const [liked, setLiked] = useState(post.liked);
@@ -40,17 +41,6 @@ export default function Post({ post }) {
         .catch((err) => console.log(err.response ? err.response.data : err));
   };
 
-  let options = {
-    blockRenderers: {
-      code: (block) => {
-        return (
-          "<pre><code class='language-javascript'>" +
-          block.getText() +
-          "</pre></code>"
-        );
-      },
-    },
-  };
   const body = stateToHTML(convertFromRaw(post.body), options);
 
   useEffect(async () => {

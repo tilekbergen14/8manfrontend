@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600;800&display=swap");
 
 html,
 body {
@@ -140,6 +140,15 @@ p {
 .c-pointer {
   cursor: pointer;
 }
+.c-initial {
+  cursor: initial;
+}
+.fw-600 {
+  font-weight: 600 !important;
+}
+.w-100 {
+  width: 100%;
+}
 .d-none {
   display: none;
 }
@@ -216,6 +225,10 @@ p {
   background-color: #757575;
   width: 100%;
 }
+.b-t-1 {
+  border-top: 1px solid #757575;
+}
+
 /**************editor-styles******************/
 .rdw-image-modal-upload-option-label {
   word-wrap: anywhere;
