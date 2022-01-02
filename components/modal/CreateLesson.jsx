@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../styles/QuestionModal.module.css";
 import { TextField, Button } from "@mui/material";
 import axios from "axios";
@@ -21,7 +21,12 @@ export default function CreateLesson({
     title: exisetedLesson ? exisetedLesson.title : "",
     price: exisetedLesson?.price ? exisetedLesson.price : "",
     imgUrl: exisetedLesson?.imgUrl ? exisetedLesson.imgUrl : "",
+    slug: exisetedLesson?.slug ? exisetedLesson.slug : "",
+    description: exisetedLesson?.description ? exisetedLesson.description : "",
   });
+  const [imgUpdated, setImgUpdated] = useState(false);
+  const body = document.body;
+  body.classList.add("overflow-hidden");
 
   const handleChange = (e) => {
     if (e.target) {
@@ -37,7 +42,8 @@ export default function CreateLesson({
         const user = JSON.parse(localStorage.getItem("user"));
         let result;
         if (exisetedLesson) {
-          if (lesson.imgUrl === "") {
+          if (!imgUpdated) {
+            console.log(lesson);
             result = await axios.put(
               `${process.env.server}/lesson/${exisetedLesson._id}`,
               lesson,
@@ -142,6 +148,7 @@ export default function CreateLesson({
           setImgUrl={setLesson}
           existedImg={lesson.imgUrl}
           aspectRatio="16 / 9"
+          setImgUpdated={setImgUpdated}
         />
         <TextField
           fullWidth
@@ -156,13 +163,36 @@ export default function CreateLesson({
         <TextField
           fullWidth
           id="standard-basic"
-          label="Price"
+          label="Description"
           variant="outlined"
           margin="dense"
-          name="price"
-          defaultValue={lesson.price}
+          name="description"
+          defaultValue={lesson.description}
           onChange={handleChange}
         />
+        <div className="flex">
+          <TextField
+            fullWidth
+            id="standard-basic"
+            label="Price"
+            variant="outlined"
+            margin="dense"
+            name="price"
+            defaultValue={lesson.price}
+            onChange={handleChange}
+            sx={{ marginRight: 1 }}
+          />
+          <TextField
+            fullWidth
+            id="standard-basic"
+            label="Slug"
+            variant="outlined"
+            margin="dense"
+            name="slug"
+            defaultValue={lesson.slug}
+            onChange={handleChange}
+          />
+        </div>
         <div className="flex space-between mt-16">
           {exisetedLesson ? (
             <Link href={`/admin/lesson/${exisetedLesson._id}`}>

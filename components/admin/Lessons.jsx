@@ -61,10 +61,7 @@ export default function Lessons() {
         <div className={styles.gridBox}>
           {lessons.map((lesson, index) => {
             return (
-              <Card
-                key={lesson._id}
-                lesson={{ ...lesson, setEditLesson, index }}
-              />
+              <Card key={index} lesson={{ ...lesson, setEditLesson, index }} />
             );
           })}
         </div>

@@ -21,7 +21,7 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-export default function RecipeReviewCard({ post, lesson }) {
+export default function RecipeReviewCard({ post, lesson, content }) {
   let date;
   const month = [
     "January",
@@ -74,17 +74,85 @@ export default function RecipeReviewCard({ post, lesson }) {
           className="flex flex-column space-between"
           sx={{ flex: "1", padding: "16px !important" }}
         >
-          <Typography
-            variant="body2"
-            className="ellipsis"
-            sx={{ fontWeight: "800", color: "#365acf" }}
-          >
-            {lesson.title}
-          </Typography>
+          <div>
+            <Typography
+              variant="h6"
+              className="ellipsis"
+              sx={{ fontWeight: "800", color: "#365acf" }}
+            >
+              {lesson.title}
+            </Typography>
+            <div
+              sx={{ fontSize: "16px", flex: "1" }}
+              className="m-a-0 ellipsis ellipsis-2 mt-16"
+            >
+              {lesson?.description}
+            </div>
+          </div>
+          <div className="flex flex-end mt-16">
+            <Typography variant="subtitle2" color="primary">
+              {`${
+                month[date.getMonth()]
+              } ${date.getDay()} , ${date.getFullYear()}`}
+            </Typography>
+          </div>
         </CardContent>
       </Card>
     );
   }
+  if (content)
+    return (
+      <Link href={`/courses/${content.slug}`}>
+        <Card
+          sx={{ maxWidth: "100%", borderRadius: "8px", boxShadow: "none" }}
+          className="flex flex-column space-between card"
+        >
+          <div
+            style={{
+              width: "100%",
+              aspectRatio: "16/9",
+              position: "relative",
+              backgroundColor: "#757575",
+            }}
+            className="flex justify-center align-center"
+          >
+            {content.imgUrl ? (
+              <Image
+                src={
+                  content.imgUrl
+                    ? `${process.env.server}/${content.imgUrl}`
+                    : "/"
+                }
+                layout="fill"
+              />
+            ) : (
+              "No image available"
+            )}
+          </div>
+
+          <CardContent
+            className="flex flex-column space-between"
+            sx={{ flex: "1", padding: "16px !important" }}
+          >
+            <div>
+              <Typography
+                variant="h6"
+                className="ellipsis"
+                sx={{ fontWeight: "800", color: "#365acf" }}
+              >
+                {content.title}
+              </Typography>
+              <div
+                sx={{ fontSize: "16px", flex: "1" }}
+                className="m-a-0 ellipsis ellipsis-2 mt-16"
+              >
+                {content.description}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
+    );
   if (post) {
     date = new Date(post?.createdAt);
     const body = post.body && stateToHTML(convertFromRaw(post.body), options);

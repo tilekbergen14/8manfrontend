@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../../../styles/Admin.module.css";
 import { useRouter } from "next/router";
 import useSWR from "swr";
+import Link from "next/link";
 import {
   ListItem,
   ListItemText,
@@ -18,6 +19,7 @@ import MyEditor from "../../../components/Editor";
 import Delete from "../../../components/Delete";
 import axios from "axios";
 import Backdrop from "../../../components/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function index({ lesson }) {
   const router = useRouter();
@@ -33,12 +35,14 @@ export default function index({ lesson }) {
       blockId: null,
     },
     loading: false,
-    create: "",
+    create: "nothing",
     length: lesson.blocks.length,
     loading: false,
   });
+  const [error, setError] = useState(null);
+  const [loadingPiece, setLoadingPiece] = useState(false);
 
-  const { data, error } = useSWR("user", async () => {
+  const { data, err } = useSWR("user", async () => {
     try {
       if (typeof window !== "undefined") {
         let user = localStorage.getItem("user");
@@ -54,7 +58,7 @@ export default function index({ lesson }) {
     }
   });
 
-  if (error || data !== "admin")
+  if (err || data !== "admin")
     return <div>Sorry you don't have permission</div>;
   if (!data) return <div>Loading...</div>;
 
@@ -68,7 +72,9 @@ export default function index({ lesson }) {
       setState({ ...state, piece: { ...state.piece, body: e } });
     }
   };
-  const handlePieceCreate = async () => {
+  const handlePieceCreate = async (e) => {
+    e.preventDefault();
+
     try {
       setState({ ...state, loading: true });
       const user = JSON.parse(localStorage.getItem("user"));
@@ -96,48 +102,84 @@ export default function index({ lesson }) {
     }
   };
 
-  const handleBlockCreate = async () => {
+  const handleBlockCreate = async (e) => {
+    e.preventDefault();
     try {
       setState({ ...state, loading: true });
+      let result;
       const user = JSON.parse(localStorage.getItem("user"));
-      const result = await axios.post(
-        `${process.env.server}/block`,
-        {
-          lessonId: lesson._id,
-          blockTitle: state.piece.blockTitle,
-          position: state.piece.blockPosition,
-        },
-        {
-          headers: {
-            authorization: "Bearer " + user.token,
+      if (!state.piece.blockId) {
+        result = await axios.post(
+          `${process.env.server}/block`,
+          {
+            lessonId: lesson._id,
+            blockTitle: state.piece.blockTitle,
+            position: state.piece.blockPosition,
           },
-        }
-      );
+          {
+            headers: {
+              authorization: "Bearer " + user.token,
+            },
+          }
+        );
+      } else {
+        result = await axios.put(
+          `${process.env.server}/block`,
+          {
+            lessonId: lesson._id,
+            blockTitle: state.piece.blockTitle,
+            position: state.piece.blockPosition,
+            blockId: state.piece.blockId,
+          },
+          {
+            headers: {
+              authorization: "Bearer " + user.token,
+            },
+          }
+        );
+      }
       if (result) {
         router.replace(router.asPath);
         setState({ ...state, loading: false });
       }
     } catch (err) {
-      console.log(err);
+      setState({
+        ...state,
+        error: err.response
+          ? err.response.data
+          : "Something absolutely went wrong!",
+      });
       setState({ ...state, loading: false });
     }
   };
-  const handleSerie = (serie, index, block, blockIndex) => {
-    setState({
-      ...state,
-      create: "serie",
-      piece: {
-        ...state.piece,
-        title: serie.title,
-        blockId: block._id,
-        blockTitle: block.title,
-        position: index + 1,
-        serieId: serie._id,
-        body:
-          convertFromRaw(serie.body) &&
-          EditorState.createWithContent(convertFromRaw(serie.body)),
-      },
-    });
+  const handleSerie = async (serie, index, block, blockIndex) => {
+    if (serie._id !== state.piece.serieId) {
+      setLoadingPiece(true);
+      try {
+        const { data } = await axios.get(
+          `${process.env.server}/serie/${serie._id}`
+        );
+        setState({
+          ...state,
+          create: "serie",
+          piece: {
+            ...state.piece,
+            title: serie.title,
+            blockId: block._id,
+            blockTitle: block.title,
+            position: index + 1,
+            serieId: serie._id,
+            body:
+              data.body &&
+              EditorState.createWithContent(convertFromRaw(data.body)),
+          },
+        });
+        setLoadingPiece(false);
+      } catch (error) {
+        console.log(error);
+        setLoadingPiece(false);
+      }
+    }
   };
   const handleBlock = (block, index) => {
     setState({
@@ -172,13 +214,14 @@ export default function index({ lesson }) {
           <div className="m-8">
             <Button
               variant="contained"
-              color="success"
+              color="info"
               onClick={() =>
                 setState({
                   ...state,
                   create: "block",
                   piece: {
                     ...state.piece,
+                    blockId: null,
                     blockTitle: "",
                     blockPosition: state.length + 1,
                   },
@@ -198,13 +241,16 @@ export default function index({ lesson }) {
                 }}
                 className="b-t-1"
               >
-                <p
+                <div
+                  className="w-100"
+                  style={{ minHeight: "25.2px" }}
                   onClick={() => handleBlock(block, blockIndex)}
-                  className="fw-600 m-0 w-100"
-                >{`${block.title}`}</p>
+                >
+                  <p className="fw-600 m-0 w-100">{`${block.title}`}</p>
+                </div>
                 <ListItemIcon sx={{ margin: 0, minWidth: "auto" }}>
                   <AddCircleIcon
-                    sx={{ margin: 0, color: "#406343" }}
+                    sx={{ margin: 0, color: "#01579b" }}
                     className="c-pointer"
                     onClick={() => IconHandle(block, index)}
                   />
@@ -262,25 +308,37 @@ export default function index({ lesson }) {
               </Button>
               <Button
                 variant="contained"
-                color="success"
+                color={state.piece.blockId ? "success" : "info"}
                 onClick={handleBlockCreate}
                 type="submit"
               >
-                Create
+                {state.piece.blockId ? "Edit" : "Create"}
               </Button>
             </div>
-            <div className="my-16">
-              {state.piece.blockTitle !== "" && (
-                <Delete
-                  wheredelete="lesson"
-                  fullWidth
-                  id={state.piece.blockId}
-                  additional={`blockId=${state.piece.blockId}`}
-                />
-              )}
-            </div>
+            {state.piece.blockId !== null && (
+              <div className="w-100 mt-16">
+                <Divider />
+                <Typography
+                  sx={{ margin: "16px 0" }}
+                  color="text.secondary"
+                  variant="body2"
+                >
+                  Additional
+                </Typography>
+
+                <div className="my-16">
+                  <Delete
+                    setLoading={setState}
+                    wheredelete="lesson"
+                    fullWidth
+                    id={lesson._id}
+                    additional={`blockId=${state.piece.blockId}`}
+                  />
+                </div>
+              </div>
+            )}
           </form>
-        ) : state.create === "serie" ? (
+        ) : state.create === "serie" && !loadingPiece ? (
           <form>
             <div className="flex">
               <TextField
@@ -326,11 +384,11 @@ export default function index({ lesson }) {
               </Button>
               <Button
                 variant="contained"
-                color="success"
+                color={state.piece.serieId ? "success" : "info"}
                 onClick={handlePieceCreate}
                 type="submit"
               >
-                Create
+                {state.piece.serieId ? "Edit" : "Create"}
               </Button>
             </div>
             <div className="w-100 mt-16">
@@ -360,21 +418,46 @@ export default function index({ lesson }) {
                   ))}
                 </TextField>
               </div>
+
               <div className="my-16">
-                <Delete
-                  wheredelete="block"
-                  fullWidth
-                  id={state.piece.blockId}
-                  additional={`serieId=${state.piece.serieId}`}
-                />
+                {state.piece.serieId && (
+                  <Delete
+                    setLoading={setState}
+                    wheredelete="block"
+                    fullWidth
+                    id={state.piece.blockId}
+                    additional={`serieId=${state.piece.serieId}`}
+                  />
+                )}
               </div>
             </div>
           </form>
+        ) : state.create === "nothing" ? (
+          <div className="flex align-center flex-column justify-center h-100">
+            <Typography variant="h1">Start editing</Typography>
+            <div>
+              <Link href="/admin">
+                <Button variant="contained" color="success">
+                  Back to admin page
+                </Button>
+              </Link>
+            </div>
+          </div>
         ) : (
-          <div>Start editing</div>
+          <div className="h-100 flex justify-center align-center">
+            <CircularProgress />
+          </div>
         )}
         {state.loading && <Backdrop loading={state.loading} />}
       </div>
+      {error && (
+        <Snackbar
+          open={error}
+          message={error}
+          color="error"
+          setOpen={setError}
+        />
+      )}
     </div>
   );
 }

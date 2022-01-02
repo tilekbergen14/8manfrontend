@@ -1,7 +1,7 @@
 import styles from "../styles/Home.module.css";
 import Image from "next/image";
 import homepage from "../public/images/homepage.png";
-import SearchIcon from "@mui/icons-material/Search";
+import Search from "../components/Search";
 import Languages from "../components/Languages";
 import Post from "../components/Post";
 import axios from "axios";
@@ -26,8 +26,7 @@ export default function Home({ posts, questions }) {
           <Image src={homepage} layout="fill" className={styles.headerImg} />
         </div>
         <div className={styles.searchBox}>
-          <input placeholder="Search..." className={styles.input} type="text" />
-          <SearchIcon color="primary" sx={{ margin: "8px" }} />
+          <Search />
         </div>
       </div>
       <div className={styles.body}>

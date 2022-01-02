@@ -31,11 +31,11 @@ const theme = createTheme({
     },
     green: {
       main: "#264653",
-      contrastText: "#000",
+      contrastText: "#fff",
     },
     text: {
       main: "#365acf",
-      contrastText: "#365acf",
+      contrastText: "#fff",
     },
   },
 });

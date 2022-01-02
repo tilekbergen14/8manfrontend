@@ -11,6 +11,7 @@ export default function Delete({
   setAnswers,
   id,
   color,
+  setLoading,
   setCreateLesson,
   setAnswerLength,
   fullWidth,
@@ -21,7 +22,7 @@ export default function Delete({
   const handleDelete = async () => {
     try {
       setVerify(false);
-      setDeleted && setDeleted(true);
+      setLoading && setLoading((state) => ({ ...state, loading: true }));
 
       setAnswerLength && setAnswerLength((answerLength) => answerLength - 1);
       setAnswers &&
@@ -33,6 +34,11 @@ export default function Delete({
       if (result && questionDelete) {
         router.push("/");
       }
+      if (setLoading && result) {
+        setLoading((state) => ({ ...state, loading: false, create: "" }));
+        router.replace(router.asPath);
+      }
+
       setCreateLesson && setCreateLesson(false);
     } catch (err) {
       console.log(err.message);

@@ -50,6 +50,9 @@ export default function Navbar({ profileImg }) {
           </Typography>
           <div className="flex">
             <ul className={`${styles.links} flex align-center`}>
+              <Link href="/courses">
+                <li className={`${styles.link} c-pointer`}>Courses</li>
+              </Link>
               <Link href="/questions">
                 <li className={`${styles.link} c-pointer`}>Questions</li>
               </Link>

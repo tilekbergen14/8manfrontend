@@ -8,6 +8,7 @@ export default function ImageUpload({
   width,
   aspectRatio,
   existedImg,
+  setImgUpdated,
 }) {
   const imageInput = useRef(null);
   const [base64img, setBase64img] = useState("");
@@ -28,6 +29,7 @@ export default function ImageUpload({
         setBase64img(reader.result);
       };
       reader.readAsDataURL(img);
+      setImgUpdated && setImgUpdated(true);
     }
   };
   return (
