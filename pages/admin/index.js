@@ -30,7 +30,9 @@ export default function index() {
   });
 
   if (error || data !== "admin")
-    return <div>Sorry you don't have permission</div>;
+    return (
+      <div className={styles.notAllowed}>Sorry you don't have permission</div>
+    );
   if (!data) return <div>Loading</div>;
 
   const handleNav = (e) => {

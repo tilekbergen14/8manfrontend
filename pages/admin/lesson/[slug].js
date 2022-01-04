@@ -464,8 +464,8 @@ export default function index({ lesson }) {
 
 export const getServerSideProps = async (context) => {
   try {
-    const id = context.params.id;
-    const lesson = await axios.get(`${process.env.server}/lesson/${id}`);
+    const slug = context.params.slug;
+    const lesson = await axios.get(`${process.env.server}/lesson/${slug}`);
 
     if (lesson) {
       return {

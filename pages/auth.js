@@ -37,6 +37,13 @@ export default function auth() {
 
   const handleLogin = () => {
     setSignin((signin) => !signin);
+    setUserData({
+      ...userData,
+      email: "",
+      username: "",
+      password: "",
+      password2: "",
+    });
     setLoading(false);
     setVerifyEmail("");
     setForgetpass(false);
@@ -189,6 +196,7 @@ export default function auth() {
                     label="Email"
                     required
                     type="email"
+                    value={userData.email}
                     variant="outlined"
                     autoComplete="off"
                     color="primary"
@@ -202,6 +210,7 @@ export default function auth() {
                 <TextField
                   id="username"
                   required
+                  value={userData.username}
                   label={signin ? "Username or email" : "Username"}
                   variant="outlined"
                   color="primary"
@@ -213,6 +222,7 @@ export default function auth() {
                 />
                 <TextField
                   id="password1"
+                  value={userData.password}
                   required
                   label="Password"
                   variant="outlined"
@@ -247,6 +257,7 @@ export default function auth() {
                     label="Confirm Password"
                     variant="outlined"
                     color="primary"
+                    value={userData.password2}
                     type={visibility.password2 ? "password" : "text"}
                     margin="dense"
                     onChange={(e) =>

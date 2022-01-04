@@ -25,16 +25,16 @@ export default function index({ lessons }) {
             value={category}
             sx={{ width: "100px" }}
           >
-            {categories.map((category) => (
-              <MenuItem key={category} value={category}>
+            {categories.map((category, index) => (
+              <MenuItem key={index} value={category}>
                 {category}
               </MenuItem>
             ))}
           </TextField>
         </div>
         <div className={`${styles.gridView}`}>
-          {lessons.map((lesson) => (
-            <Card content={lesson} />
+          {lessons.map((lesson, index) => (
+            <Card key={index} content={lesson} to="courses" />
           ))}
         </div>
       </div>

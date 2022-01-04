@@ -10,6 +10,7 @@ export default function VerifyEmail({ user }) {
       user && localStorage.setItem("user", JSON.stringify(user));
     }
     router.push("/");
+    router.reload();
   }, []);
   return (
     <div className="flex flex-column justify-center align-center h-100">
