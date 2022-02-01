@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Link from "next/link";
+import Link from "next/Link";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 
@@ -43,9 +43,13 @@ export default function RecipeReviewCard({ post, to, content }) {
   };
   if (content)
     return (
-      <Link href={`/${to}/${content.slug}`}>
+      <Link href={`/${to}`}>
         <Card
-          sx={{ maxWidth: "100%", borderRadius: "8px", boxShadow: "none" }}
+          sx={{
+            maxWidth: "100%",
+            borderRadius: "8px",
+            boxShadow: "none",
+          }}
           className="flex flex-column space-between card"
         >
           <div
@@ -94,9 +98,10 @@ export default function RecipeReviewCard({ post, to, content }) {
         </Card>
       </Link>
     );
+
   if (post) {
     date = new Date(post?.createdAt);
-    const body = post.body && stateToHTML(convertFromRaw(post.body), options);
+    const body = post.body;
     return (
       <Card
         sx={{ maxWidth: "100%", borderRadius: "8px", boxShadow: "none" }}
@@ -139,11 +144,16 @@ export default function RecipeReviewCard({ post, to, content }) {
                   <span
                     className="c-pointer hoverblue"
                     onClick={(e) => handleTag(e)}
+                    key={index}
                   >
                     {tag}
                   </span>
                 ) : (
-                  <span className="c-pointer hoverblue" onClick={handleTag}>
+                  <span
+                    key={index}
+                    className="c-pointer hoverblue"
+                    onClick={handleTag}
+                  >
                     {tag},{" "}
                   </span>
                 )

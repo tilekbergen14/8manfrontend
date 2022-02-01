@@ -145,6 +145,7 @@ export default function me() {
                   aspectRatio: "1/1",
                   height: "214px",
                   margin: "16px 8px 0 0",
+                  border: (data.data.profile || base64img) && "none",
                 }}
                 className={`c-pointer imgUploadBox flex justify-center align-center`}
               >

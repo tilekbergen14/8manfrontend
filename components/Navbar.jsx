@@ -9,7 +9,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import styles from "../styles/Navbar.module.css";
 import Drawer from "./Drawer";
 import Avatar from "@mui/material/Avatar";
-import Link from "next/link";
+import Link from "next/Link";
 import useSWR from "swr";
 import axios from "axios";
 
@@ -26,12 +26,13 @@ export default function Navbar({ profileImg }) {
       setUser(JSON.parse(localStorage.getItem("user")));
     }
   }, []);
-
   const { data, error } = useSWR(
     `${process.env.server}/user/${user?.id}`,
     async (key) => {
       if (user) {
-        return await axios.get(key);
+        return await axios.get(key, {
+          headers: { authorization: "Bearer " + user?.token },
+        });
       }
     }
   );

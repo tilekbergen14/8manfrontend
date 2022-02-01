@@ -18,7 +18,6 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { TextField, Button } from "@mui/material";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import MyEditor from "../../../components/Editor";
-import Delete from "../../../components/Delete";
 import axios from "axios";
 import Backdrop from "../../../components/Backdrop";
 

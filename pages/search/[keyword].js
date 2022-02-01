@@ -1,19 +1,19 @@
-import styles from "../styles/Home.module.css";
+import styles from "../../styles/Home.module.css";
 import Image from "next/image";
-import homepage from "../public/images/homepage.png";
-import Search from "../components/Search";
-import Languages from "../components/Languages";
-import Post from "../components/Post";
+import homepage from "../../public/images/homepage.png";
+import Search from "../../components/Search";
+import Languages from "../../components/Languages";
+import Post from "../../components/Post";
 import axios from "axios";
-import Question from "../components/Question";
+import Question from "../../components/Question";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Link from "next/Link";
 
-export default function Home({ posts, questions }) {
+export default function SearchResults({ posts, questions }) {
   return (
     <div className={styles.homepage}>
-      <div className={styles.header}>
-        <div className={styles.openingText}>
+      <div className={`${styles.header} ${styles.spHeader}`}>
+        <div className={`${styles.openingText} ${styles.spOpeningText}`}>
           <h1 className={styles.bigText}>
             <span className={styles.learn}>Learn</span>
             <span className={styles.teach}>Teach</span>
@@ -24,11 +24,6 @@ export default function Home({ posts, questions }) {
             teach and much more. Join the team.
           </p>
         </div>
-        <div className="flex flex-end w-100">
-          <div className={styles.headerImgBox}>
-            <Image src={homepage} layout="fill" className={styles.headerImg} />
-          </div>
-        </div>
         <div className={styles.searchBox}>
           <Search />
         </div>
@@ -37,20 +32,10 @@ export default function Home({ posts, questions }) {
         <div className={styles.bodyRight}>
           <div className="flex space-between align-center">
             <h3 className="title">Posts</h3>
-            <Link href="posts">
-              <h3 className="title flex align-center c-pointer ">
-                See All <ArrowForwardIosIcon fontSize="14px" />
-              </h3>
-            </Link>
           </div>
           {posts && posts.map((post) => <Post post={post} key={post.id} />)}
           <div className="flex space-between align-center ">
             <h3 className="title">Questions</h3>
-            <Link href="questions">
-              <h3 className="title flex align-center c-pointer">
-                See All <ArrowForwardIosIcon fontSize="14px" />
-              </h3>
-            </Link>
           </div>
           {questions &&
             questions.map((question) => (
@@ -65,7 +50,7 @@ export default function Home({ posts, questions }) {
   );
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async (context) => {
   try {
     const posts = await axios.get(`${process.env.server}/post`);
     const questions = await axios.get(`${process.env.server}/question`);

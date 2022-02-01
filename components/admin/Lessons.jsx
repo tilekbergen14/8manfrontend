@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../../styles/Lessons.module.css";
 import Card from "../Card";
 import Select from "../Select";
-import Button from "@mui/material/Button";
+import { Button, CircularProgress } from "@mui/material";
 import CreateLesson from "../modal/CreateLesson";
 import Snackbar from "../../components/Snackbar";
 import axios from "axios";
@@ -58,19 +58,27 @@ export default function Lessons() {
         )}
       </div>
       {lessons ? (
-        <div className={styles.gridBox}>
-          {lessons.map((lesson, index) => {
-            return (
-              <Card
-                key={index}
-                content={{ ...lesson, setEditLesson, index }}
-                to="admin/lesson"
-              />
-            );
-          })}
-        </div>
+        lessons.length !== 0 ? (
+          <div className={styles.gridBox}>
+            {lessons.map((lesson, index) => {
+              return (
+                <Card
+                  key={index}
+                  content={{ ...lesson, setEditLesson, index }}
+                  to={`admin/lesson/${lesson.slug}`}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex flex-1 justify-center align-center">
+            There is no lessons
+          </div>
+        )
       ) : (
-        <div>There is no posts yet!</div>
+        <div className="flex flex-1 justify-center align-center">
+          <CircularProgress />
+        </div>
       )}
       {lessonCreated && (
         <Snackbar

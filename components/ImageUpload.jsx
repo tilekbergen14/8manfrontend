@@ -1,7 +1,5 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-import axios from "axios";
-
 export default function ImageUpload({
   setImgUrl,
   height,
@@ -9,6 +7,8 @@ export default function ImageUpload({
   aspectRatio,
   existedImg,
   setImgUpdated,
+  margin,
+  padding,
 }) {
   const imageInput = useRef(null);
   const [base64img, setBase64img] = useState("");
@@ -21,9 +21,7 @@ export default function ImageUpload({
       type === "image/jpeg" ||
       type === "image/jfif"
     ) {
-      const formData = new FormData();
-      formData.append("file", img);
-      setImgUrl((prevState) => ({ ...prevState, imgUrl: formData }));
+      setImgUrl((prevState) => ({ ...prevState, imgUrl: img, edited: true }));
       var reader = new FileReader();
       reader.onloadend = function () {
         setBase64img(reader.result);
@@ -49,8 +47,11 @@ export default function ImageUpload({
         className={`c-pointer imgUploadBox flex justify-center align-center`}
         style={{
           height: height ? height : "auto",
-          width: width ? width : "100%",
+          width: width && width,
           aspectRatio: aspectRatio,
+          margin: margin,
+          padding: padding,
+          border: (existedImg || base64img) && "none",
         }}
       >
         {existedImg && base64img === "" ? (

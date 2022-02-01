@@ -18,8 +18,10 @@ export default function SelectLabels({ options, setSelected, selected }) {
         displayEmpty
         inputProps={{ "aria-label": "Without label" }}
       >
-        {options.map((option) => (
-          <MenuItem value={option}>{option}</MenuItem>
+        {options.map((option, index) => (
+          <MenuItem key={index} value={option}>
+            {option}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>

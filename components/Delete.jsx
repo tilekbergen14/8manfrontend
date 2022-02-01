@@ -10,10 +10,13 @@ export default function Delete({
   setDeleted,
   setAnswers,
   id,
+  redirectTo,
+  variant,
   color,
   setLoading,
   setCreateLesson,
   setAnswerLength,
+  lessonDelete,
   fullWidth,
   additional,
 }) {
@@ -27,12 +30,26 @@ export default function Delete({
       setAnswerLength && setAnswerLength((answerLength) => answerLength - 1);
       setAnswers &&
         setAnswers((answers) => answers.filter((answer) => answer.id !== id));
+      const user = JSON.parse(localStorage.getItem("user"));
       const result = await axios.delete(
-        `${process.env.server}/${wheredelete}/${id}?${additional}`
+        `${process.env.server}/${wheredelete}/${id}${
+          additional ? `?${additional}` : ""
+        }`,
+        {
+          headers: {
+            authorization: "Bearer " + user.token,
+          },
+        }
       );
 
       if (result && questionDelete) {
         router.push("/");
+      }
+      if (result && lessonDelete) {
+        router.push("/admin/");
+      }
+      if (result && redirectTo) {
+        return router.push(`/${redirectTo}/`);
       }
       if (setLoading && result) {
         setLoading((state) => ({ ...state, loading: false, create: "" }));
@@ -46,16 +63,26 @@ export default function Delete({
   };
   return (
     <span>
-      <Button
-        onClick={() => setCreateLesson(true)}
-        variant="contained"
-        color="danger"
-        onClick={() => setVerify(true)}
-        size="small"
-        fullWidth={fullWidth ? true : false}
-      >
-        Delete
-      </Button>
+      {variant !== "p" ? (
+        <Button
+          onClick={() => setCreateLesson(true)}
+          variant="contained"
+          color="danger"
+          onClick={() => setVerify(true)}
+          size="small"
+          fullWidth={fullWidth ? true : false}
+        >
+          Delete
+        </Button>
+      ) : (
+        <span
+          onClick={() => setVerify(true)}
+          style={{ color: "#FD3A69" }}
+          className="c-pointer"
+        >
+          Delete
+        </span>
+      )}
       {verify && (
         <div style={styles.box}>
           <div style={styles.modal}>

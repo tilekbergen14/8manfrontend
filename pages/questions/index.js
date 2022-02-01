@@ -39,7 +39,7 @@ export default function questions(props) {
         <Snackbar
           open={questionCreated}
           setPostCreated={setQuestionCreated}
-          message="Post created succesfully!"
+          message="Question created succesfully!"
           color="success"
         />
       )}

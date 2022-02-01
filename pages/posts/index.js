@@ -34,8 +34,14 @@ export default function posts({ posts }) {
 }
 
 export const getStaticProps = async () => {
-  const posts = await axios.get(`${process.env.server}/post`);
-  return {
-    props: { posts: posts.data ? posts.data : [] },
-  };
+  try {
+    const posts = await axios.get(`${process.env.server}/post`);
+    return {
+      props: { posts: posts.data ? posts.data : [] },
+    };
+  } catch (err) {
+    return {
+      notFound: true,
+    };
+  }
 };

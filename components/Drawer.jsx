@@ -12,8 +12,7 @@ import {
   Avatar,
   Button,
 } from "@mui/material";
-
-import Link from "next/link";
+import Link from "next/Link";
 
 export default function TemporaryDrawer({ toggleDrawer, left, user }) {
   const list = () => (

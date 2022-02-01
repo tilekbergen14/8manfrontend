@@ -34,7 +34,7 @@ export default function index({ lessons }) {
         </div>
         <div className={`${styles.gridView}`}>
           {lessons.map((lesson, index) => (
-            <Card key={index} content={lesson} to="courses" />
+            <Card key={index} content={lesson} to={`courses/${lesson.slug}`} />
           ))}
         </div>
       </div>

@@ -6,7 +6,7 @@ import Snackbar from "../Snackbar";
 import { useRouter } from "next/router";
 import CloseIcon from "@mui/icons-material/Close";
 import ImageUpload from "../ImageUpload";
-import Link from "next/link";
+import Link from "next/Link";
 
 export default function CreateLesson({
   setCreateLesson,
@@ -27,7 +27,7 @@ export default function CreateLesson({
   const [imgUpdated, setImgUpdated] = useState(false);
   const body = document.body;
   body.classList.add("overflow-hidden");
-
+  let data = new FormData();
   const handleChange = (e) => {
     if (e.target) {
       setLesson({ ...lesson, [e.target.name]: e.target.value });
@@ -36,73 +36,22 @@ export default function CreateLesson({
 
   const handleSubmit = async () => {
     try {
-      if (lesson.title !== "" && lesson.price !== "") {
+      if (lesson.title !== "" && lesson.slug !== "") {
         setError(null);
         setLoading(true);
         const user = JSON.parse(localStorage.getItem("user"));
+
         let result;
-        if (exisetedLesson) {
-          if (!imgUpdated) {
-            console.log(lesson);
-            result = await axios.put(
-              `${process.env.server}/lesson/${exisetedLesson._id}`,
-              lesson,
-              {
-                headers: {
-                  authorization: "Bearer " + user.token,
-                },
-              }
-            );
-          } else {
-            const imgresult = await axios.post(
-              `${process.env.server}/image`,
-              lesson.imgUrl
-            );
-            result = await axios.put(
-              `${process.env.server}/lesson/${exisetedLesson._id}`,
-              {
-                ...lesson,
-                imgUrl: imgresult.data.imageUrl ? imgresult.data.imageUrl : "",
-              },
-              {
-                headers: {
-                  authorization: "Bearer " + user.token,
-                },
-              }
-            );
-          }
-        } else {
-          if (lesson.imgUrl !== "") {
-            const imgresult = await axios.post(
-              `${process.env.server}/image`,
-              lesson.imgUrl
-            );
-            result = await axios.post(
-              `${process.env.server}/lesson`,
-              {
-                ...lesson,
-                imgUrl: imgresult.data.imageUrl ? imgresult.data.imageUrl : "",
-              },
-              {
-                headers: {
-                  authorization: "Bearer " + user.token,
-                },
-              }
-            );
-          } else {
-            result = await axios.post(
-              `${process.env.server}/lesson`,
-              {
-                ...lesson,
-              },
-              {
-                headers: {
-                  authorization: "Bearer " + user.token,
-                },
-              }
-            );
-          }
-        }
+        data.append("title", lesson.title);
+        data.append("slug", lesson.slug);
+        data.append("price", lesson.price);
+        data.append("file", lesson.imgUrl);
+        data.append("description", lesson.description);
+        result = await axios.post(`${process.env.server}/lesson`, data, {
+          headers: {
+            authorization: "Bearer " + user.token,
+          },
+        });
         if (result) {
           setLoading(false);
           setCreateLesson(false);
@@ -110,7 +59,7 @@ export default function CreateLesson({
           router.replace(router.asPath);
         }
       } else {
-        setError("Title and price required!");
+        setError("Title and slug required!");
       }
     } catch (err) {
       setLoading(false);
@@ -151,6 +100,7 @@ export default function CreateLesson({
           setImgUpdated={setImgUpdated}
         />
         <TextField
+          disabled={exisetedLesson}
           fullWidth
           id="standard-basic"
           label="Title"
@@ -161,6 +111,7 @@ export default function CreateLesson({
           onChange={handleChange}
         />
         <TextField
+          disabled={exisetedLesson}
           fullWidth
           id="standard-basic"
           label="Description"
@@ -172,6 +123,7 @@ export default function CreateLesson({
         />
         <div className="flex">
           <TextField
+            disabled={exisetedLesson}
             fullWidth
             id="standard-basic"
             label="Price"
@@ -183,6 +135,7 @@ export default function CreateLesson({
             sx={{ marginRight: 1 }}
           />
           <TextField
+            disabled={exisetedLesson}
             fullWidth
             id="standard-basic"
             label="Slug"
@@ -195,7 +148,7 @@ export default function CreateLesson({
         </div>
         <div className="flex space-between mt-16">
           {exisetedLesson ? (
-            <Link href={`/admin/lesson/${exisetedLesson._id}`}>
+            <Link href={`/admin/lesson/${exisetedLesson.slug}`}>
               <Button color="info" variant="contained" size="small">
                 Manage lesson
               </Button>
@@ -210,15 +163,17 @@ export default function CreateLesson({
               Cancel
             </Button>
           )}
-          <Button
-            color="success"
-            variant="contained"
-            onClick={handleSubmit}
-            disabled={loading}
-            size="small"
-          >
-            {loading ? "Loading..." : exisetedLesson ? "Edit" : "Add"}
-          </Button>
+          {!exisetedLesson && (
+            <Button
+              color="success"
+              variant="contained"
+              onClick={handleSubmit}
+              disabled={loading}
+              size="small"
+            >
+              {loading ? "Loading..." : exisetedLesson ? "Edit" : "Add"}
+            </Button>
+          )}
         </div>
       </div>
     </div>

@@ -122,6 +122,7 @@ export default function Askquestion({
               blockType={blockType}
               editorState={question.body}
               wrapper={true}
+              height="300px"
             />
           </div>
           <div className="flex space-between">
@@ -187,6 +188,7 @@ export default function Askquestion({
               blockType={blockType}
               editorState={question.body}
               wrapper={true}
+              height="300px"
             />
           </div>
           <div className="flex space-between">

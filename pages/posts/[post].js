@@ -26,22 +26,24 @@ export default function Post({ post }) {
       setLikes((likes) => likes + 1);
     }
     const user = JSON.parse(localStorage.getItem("user"));
-    user.token &&
-      axios
-        .post(
-          `${process.env.server}/post/like`,
-          { id: post.id },
-          {
-            headers: {
-              authorization: "Bearer " + user.token,
-            },
-          }
-        )
-        .then((result) => {})
-        .catch((err) => console.log(err.response ? err.response.data : err));
+    if (user) {
+      user.token &&
+        axios
+          .post(
+            `${process.env.server}/post/like`,
+            { id: post.id },
+            {
+              headers: {
+                authorization: "Bearer " + user.token,
+              },
+            }
+          )
+          .then((result) => {})
+          .catch((err) => console.log(err.response ? err.response.data : err));
+    }
   };
 
-  const body = stateToHTML(convertFromRaw(post.body), options);
+  // const body = stateToHTML(convertFromRaw(post.body), options);
 
   useEffect(async () => {
     if (typeof window !== "undefined") {
@@ -51,7 +53,6 @@ export default function Post({ post }) {
       const result = await axios.get(
         `${process.env.server}/post/relatedposts?limit=2?currentpost=${post.id}`
       );
-      console.log(result.data);
       result && setRelatedposts(result.data);
     } catch (err) {
       console.log(err);
@@ -78,9 +79,9 @@ export default function Post({ post }) {
                   </p>
                 </div>
                 <div className={styles.tags}>
-                  {post.tags.map((tag) => (
+                  {post.tags.map((tag, index) => (
                     <Button
-                      key={tag}
+                      key={index}
                       variant="outlined"
                       color="success"
                       sx={{ margin: "4px" }}
@@ -125,14 +126,16 @@ export default function Post({ post }) {
             </div>
             <div
               className={styles.body}
-              dangerouslySetInnerHTML={{ __html: body }}
+              dangerouslySetInnerHTML={{ __html: post.body }}
             ></div>
             <div className="divider my-8"></div>
             <div className={styles.readmore}>
               <p className="title">Related posts</p>
               <div className={styles.morePosts}>
                 {relatedposts &&
-                  relatedposts.map((post) => <Card post={post} />)}
+                  relatedposts.map((post, index) => {
+                    return <Card key={index} post={post} />;
+                  })}
               </div>
             </div>
           </div>

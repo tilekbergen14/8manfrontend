@@ -9,8 +9,12 @@ body {
   font-family: "Poppins", sans-serif;
   background-color: #f2f4f7;
 }
+.content {
+  overflow: auto;
+}
 span {
   font-family: inherit;
+  text-align: inherit;
   color: inherit;
 }
 
@@ -37,11 +41,12 @@ blockquote {
   margin: 16px 0;
   font-style: italic;
 }
-pre {
+pre * {
   width: 100%;
   border-radius: 8px;
   overflow-x: scroll;
   font-size: 16px !important;
+  white-space: pre-wrap !important;
 }
 pre::-webkit-scrollbar {
   width: 4px;
@@ -67,10 +72,19 @@ p {
 .grid {
   display: grid;
 }
+.grid-column {
+  grid-auto-flow: column;
+}
 .grid-center {
   place-items: center;
 }
-.grid-column-1fr {
+.grid-gap-16 {
+  grid-gap: 16px;
+}
+.grid-gap-8 {
+  grid-gap: 8px;
+}
+.grid-2-column {
   grid-template-columns: 1fr 1fr;
 }
 .b-radius-8 {
@@ -92,18 +106,22 @@ p {
 }
 .container {
   max-width: 960px;
+  width: 100%;
 }
 .container-x {
-  margin: 0 24px;
+  padding: 0 24px;
 }
 .p-container {
   padding: 24px;
 }
 .container-y {
-  margin: 24px 0;
+  padding: 24px 0;
 }
 .flex-column {
   flex-direction: column;
+}
+.flex-1 {
+  flex: 1;
 }
 .flex {
   display: flex;
@@ -159,14 +177,12 @@ p {
   display: none;
 }
 .imgUploadBox {
-  height: 130px;
   display: grid;
   place-items: center;
   aspect-ratio: 16 / 9;
-  background-color: #f2f4f7;
-  border: 2px dashed #757575;
+  border: 3px dashed #757575;
   font-size: 20px;
-  margin: 8px 0;
+  margin: 0;
   position: relative;
 }
 .m-auto {
@@ -178,6 +194,9 @@ p {
 .mx-16 {
   margin: 0 16px;
 }
+.ml-8 {
+  margin-left: 8px;
+}
 .m-a-0 > * {
   all: initial;
   margin: 0;
@@ -188,6 +207,7 @@ p {
 .m-8 {
   margin: 8px;
 }
+
 .my-8 {
   margin-top: 8px;
   margin-bottom: 8px;
@@ -202,8 +222,14 @@ p {
 .mt-0 {
   margin-top: 0;
 }
+.mt-8 {
+  margin-top: 8px;
+}
 .mt-16 {
   margin-top: 16px;
+}
+.mt-24 {
+  margin-top: 24px;
 }
 .mb-16 {
   margin-bottom: 16px;
@@ -257,6 +283,12 @@ p {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+.public-DraftStyleDefault-ltr {
+  text-align: inherit !important;
+}
+/* .public-DraftStyleDefault-block {
+  white-space: normal !important;
+} */
 /******drawer*******/
 
 @media screen and (max-width: 900px) {
@@ -268,13 +300,13 @@ p {
     font-size: 16px;
   }
   .container-x {
-    margin: 0 8px;
+    padding: 0 8px;
   }
   .p-container {
     padding: 8px;
   }
   .container-y {
-    margin: 8px 0;
+    padding: 8px 0;
   }
   .tablet-none {
     display: none;

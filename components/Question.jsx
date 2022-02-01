@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import styles from "../styles/PostComponent.module.css";
 import Avatar from "@mui/material/Avatar";
-import Link from "next/link";
+import Link from "next/Link";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import axios from "axios";
 import { Button } from "@mui/material";
+import moment from "moment";
 
 export default function Question({ question }) {
   const [liked, setLiked] = useState(
@@ -35,7 +36,7 @@ export default function Question({ question }) {
         .then((result) => console.log(result))
         .catch((err) => console.log(err.response ? err.response.data : err));
   };
-  const date = new Date(question.createdAt);
+
   return (
     <div className={styles.post}>
       <div className={styles.header}>
@@ -47,7 +48,7 @@ export default function Question({ question }) {
         <div>
           <p className={styles.name}>{question.author}</p>
           <p className={styles.createdAt}>
-            {date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate()}
+            {moment(question.createdAt).fromNow()}
           </p>
         </div>
       </div>

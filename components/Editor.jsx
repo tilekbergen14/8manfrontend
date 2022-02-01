@@ -69,7 +69,7 @@ export default class ControlledEditor extends Component {
     this.props.loading && this.clickHandler();
 
     return (
-      <div>
+      <>
         <Editor
           editorState={editorState}
           toolbarClassName={styles.toolbar}
@@ -121,7 +121,7 @@ export default class ControlledEditor extends Component {
             },
           }}
         />
-      </div>
+      </>
     );
   }
 }

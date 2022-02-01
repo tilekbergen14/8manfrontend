@@ -18,7 +18,6 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { TextField, Button } from "@mui/material";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import MyEditor from "../../../components/Editor";
-import Delete from "../../../components/Delete";
 import axios from "axios";
 import Backdrop from "../../../components/Backdrop";
 
@@ -26,10 +25,10 @@ export default function Course({ lesson, serie, series }) {
   const router = useRouter();
   const [state, setState] = useState({
     piece: {
-      title: serie.title,
-      position: serie.position,
-      body: serie.body && stateToHTML(convertFromRaw(serie.body), options),
-      serieId: serie._id,
+      title: serie?.title,
+      position: serie?.position,
+      body: serie?.body && stateToHTML(convertFromRaw(serie.body), options),
+      serieId: serie?._id,
     },
     loading: false,
     length: lesson.blocks.length,
@@ -41,10 +40,10 @@ export default function Course({ lesson, serie, series }) {
     setState({
       ...state,
       piece: {
-        title: serie.title,
-        body: serie.body && stateToHTML(convertFromRaw(serie.body), options),
-        serieId: serie._id,
-        position: serie.position,
+        title: serie?.title,
+        body: serie?.body && stateToHTML(convertFromRaw(serie.body), options),
+        serieId: serie?._id,
+        position: serie?.position,
       },
     });
   }, [serie]);
@@ -65,6 +64,8 @@ export default function Course({ lesson, serie, series }) {
       }
     }
   };
+  if (!serie)
+    return <div className="grid grid-center h-100">There is nothing</div>;
   return (
     <div className={styles.page}>
       <div className={styles.hornav}>
@@ -175,26 +176,30 @@ export const getServerSideProps = async (context) => {
   try {
     const { slug } = context.params;
     const lesson = await axios.get(`${process.env.server}/lesson/${slug}`);
-    const serie = await axios.get(
-      `${process.env.server}/serie/${lesson.data.blocks[0].series[0]._id}`
-    );
-    let series = [],
+    let serie,
+      series = [],
       position = null;
-    lesson.data.blocks.map((block) => {
-      for (let i = 0; i < block.series.length; i++) {
-        series.push(block.series[i]._id);
-      }
-    });
-    for (let i = 0; i < series.length; i++) {
-      if (series[i] === serie.data._id) {
-        position = i;
+    if (lesson.data?.blocks[0]?.series[0]) {
+      serie = await axios.get(
+        `${process.env.server}/serie/${lesson.data.blocks[0].series[0]._id}`
+      );
+      lesson.data.blocks.map((block) => {
+        for (let i = 0; i < block.series.length; i++) {
+          series.push(block.series[i]._id);
+        }
+      });
+      for (let i = 0; i < series.length; i++) {
+        if (series[i] === serie.data._id) {
+          position = i;
+        }
       }
     }
-    if (lesson && serie) {
+
+    if (lesson) {
       return {
         props: {
           lesson: lesson.data,
-          serie: { ...serie.data, position: position },
+          serie: serie?.data ? { ...serie.data, position: position } : null,
           series: series,
         },
       };

@@ -271,7 +271,7 @@ export default function questions({ question }) {
             toolbar={toolbar}
             blockType={blockType}
             editorState={answer.editorState}
-            wrapper={true}
+            height="100%"
           />
         </div>
         <div className="flex flex-end">

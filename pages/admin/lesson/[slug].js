@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import styles from "../../../styles/Admin.module.css";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import Link from "next/link";
+import Delete from "../../../components/Delete";
+import Switch from "@mui/material/Switch";
 import {
   ListItem,
   ListItemText,
@@ -11,15 +12,16 @@ import {
   ListItemIcon,
   MenuItem,
   Divider,
+  InputAdornment,
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { TextField, Button } from "@mui/material";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import MyEditor from "../../../components/Editor";
-import Delete from "../../../components/Delete";
 import axios from "axios";
 import Backdrop from "../../../components/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import ImageUpload from "../../../components/ImageUpload";
 
 export default function index({ lesson }) {
   const router = useRouter();
@@ -39,6 +41,34 @@ export default function index({ lesson }) {
     length: lesson.blocks.length,
     loading: false,
   });
+  const [details, setDetails] = useState({
+    slug: lesson.slug,
+    title: lesson.title,
+    description: lesson.description,
+    price: lesson.price,
+    imgUrl: lesson.imgUrl,
+    published: lesson.published,
+    edited: false,
+  });
+  const [editDetails, setEditDetails] = useState({
+    slug: false,
+    title: false,
+    description: false,
+    price: false,
+    imgUrl: false,
+  });
+  const handleLessonChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+    if (!details.edited) {
+      setDetails({ ...details, edited: true });
+    }
+  };
+  const cancelChanges = () => {
+    setDetails({
+      ...lesson,
+      edited: false,
+    });
+  };
   const [error, setError] = useState(null);
   const [loadingPiece, setLoadingPiece] = useState(false);
 
@@ -102,6 +132,34 @@ export default function index({ lesson }) {
     }
   };
 
+  const handleEditLessonDetails = async () => {
+    const formData = new FormData();
+    const user = JSON.parse(localStorage.getItem("user"));
+    formData.append("title", details.title);
+    formData.append("slug", details.slug);
+    formData.append("description", details.description);
+    formData.append("file", details.imgUrl);
+    formData.append("price", details.price);
+    formData.append("published", details.published);
+    setState({ ...state, loading: true });
+    try {
+      const result = await axios.put(
+        `${process.env.server}/lesson/${lesson._id}`,
+        formData,
+        {
+          headers: {
+            authorization: "Bearer " + user.token,
+          },
+        }
+      );
+      if (result) {
+        router.reload(router.asPath);
+        setState({ ...state, loading: false });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const handleBlockCreate = async (e) => {
     e.preventDefault();
     try {
@@ -211,7 +269,19 @@ export default function index({ lesson }) {
     <div className={styles.page}>
       <div className={styles.hornav}>
         <div className={styles.fixed}>
-          <div className="m-8">
+          <div className="m-8 grid grid-gap-8 grid-2-column">
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() =>
+                setState({
+                  ...state,
+                  create: "nothing",
+                })
+              }
+            >
+              Details
+            </Button>
             <Button
               variant="contained"
               color="info"
@@ -227,9 +297,8 @@ export default function index({ lesson }) {
                   },
                 })
               }
-              sx={{ width: "100%" }}
             >
-              Add new block
+              New block
             </Button>
           </div>
           {lesson?.blocks.map((block, blockIndex) => (
@@ -433,15 +502,183 @@ export default function index({ lesson }) {
             </div>
           </form>
         ) : state.create === "nothing" ? (
-          <div className="flex align-center flex-column justify-center h-100">
-            <Typography variant="h1">Start editing</Typography>
-            <div>
-              <Link href="/admin">
-                <Button variant="contained" color="success">
-                  Back to admin page
-                </Button>
-              </Link>
+          <div className="">
+            <p id="aboutyou" className="title" style={{ margin: "0" }}>
+              Details
+            </p>
+            <div className="flex space-between align-center mt-8">
+              <p style={{ margin: "0" }}>Published</p>
+              <Switch
+                onChange={(e) => {
+                  setDetails({
+                    ...details,
+                    published: e.target.checked,
+                    edited: true,
+                  });
+                }}
+                color="info"
+                checked={details.published}
+                inputProps={{ "aria-label": "controlled" }}
+              />
             </div>
+            <div className={styles.details}>
+              <ImageUpload
+                height="100%"
+                margin="0"
+                setImgUrl={setDetails}
+                existedImg={details.imgUrl}
+              />
+              <div className="grid grid-gap-16 grid-center">
+                <TextField
+                  size="small"
+                  name="title"
+                  label="Title"
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleLessonChange}
+                  value={details.title}
+                  disabled={!editDetails.title}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          size="small"
+                          variant="text"
+                          color={editDetails.title ? "success" : "info"}
+                          onClick={() =>
+                            setEditDetails({
+                              ...editDetails,
+                              title: !editDetails.title,
+                            })
+                          }
+                        >
+                          {editDetails.title ? "Save" : "Edit"}
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  size="small"
+                  name="slug"
+                  label="Slug"
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleLessonChange}
+                  value={details.slug}
+                  disabled={!editDetails.slug}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          size="small"
+                          variant="text"
+                          color={editDetails.slug ? "success" : "info"}
+                          onClick={() =>
+                            setEditDetails({
+                              ...editDetails,
+                              slug: !editDetails.slug,
+                            })
+                          }
+                        >
+                          {editDetails.slug ? "Save" : "Edit"}
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  size="small"
+                  label="Price"
+                  name="price"
+                  variant="outlined"
+                  fullWidth
+                  onChange={handleLessonChange}
+                  value={details.price}
+                  disabled={!editDetails.price}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          size="small"
+                          variant="text"
+                          color={editDetails.price ? "success" : "info"}
+                          onClick={() =>
+                            setEditDetails({
+                              ...editDetails,
+                              price: !editDetails.price,
+                            })
+                          }
+                        >
+                          {editDetails.price ? "Save" : "Edit"}
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  size="small"
+                  label="Description"
+                  variant="outlined"
+                  fullWidth
+                  name="description"
+                  onChange={handleLessonChange}
+                  value={details.description}
+                  disabled={!editDetails.description}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          size="small"
+                          variant="text"
+                          color={editDetails.description ? "success" : "info"}
+                          onClick={() =>
+                            setEditDetails({
+                              ...editDetails,
+                              description: !editDetails.description,
+                            })
+                          }
+                        >
+                          {editDetails.description ? "Save" : "Edit"}
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
+            </div>
+            <div className="flex space-between mb-16">
+              <Button
+                size="small"
+                variant="contained"
+                color="danger"
+                disabled={!details.edited}
+                onClick={cancelChanges}
+              >
+                Cancel changes
+              </Button>
+              <Button
+                size="small"
+                variant="contained"
+                color="success"
+                disabled={!details.edited}
+                onClick={handleEditLessonDetails}
+              >
+                Save Changes
+              </Button>
+            </div>
+            <p id="aboutyou" className="title" style={{ margin: "0" }}>
+              Danger zone
+            </p>
+            <p>
+              Do you want to delete this lesson?{" "}
+              <Delete
+                variant="p"
+                wheredelete="lesson"
+                id={lesson._id}
+                lessonDelete={true}
+              />
+            </p>
           </div>
         ) : (
           <div className="h-100 flex justify-center align-center">
