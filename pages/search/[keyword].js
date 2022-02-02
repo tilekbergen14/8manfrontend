@@ -1,15 +1,38 @@
+import { useState } from "react";
 import styles from "../../styles/Home.module.css";
 import Image from "next/image";
 import homepage from "../../public/images/homepage.png";
 import Search from "../../components/Search";
 import Languages from "../../components/Languages";
-import Post from "../../components/Post";
+import { TextField, MenuItem, CircularProgress } from "@mui/material";
 import axios from "axios";
 import Question from "../../components/Question";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Link from "next/Link";
+import Card from "../../components/Card";
 
-export default function SearchResults({ posts, questions }) {
+export default function SearchResults(props) {
+  const [category, setCategory] = useState("All");
+  const [loadmore, setLoadmore] = useState(false);
+  const categories = ["All", "Posts", "Questions", "Lessons"];
+  const [posts, setPosts] = useState(props.posts);
+  const [lessons, setLessons] = useState(props.lessons);
+  const [questions, setQuestions] = useState(props.questions);
+  const handleLoadMore = async () => {
+    try {
+      setLoadmore(true);
+      const { data } = await axios.get(
+        `${process.env.server}/search?keyword=${props.keyword}&limit=6&questions=${posts.length}`
+      );
+      setPosts([...posts, ...data.posts]);
+      setQuestions([...questions, ...data.questions]);
+      setLessons([...lessons, ...data.lessons]);
+      setLoadmore(false);
+    } catch (err) {
+      setLoadmore(false);
+    }
+  };
+
   return (
     <div className={styles.homepage}>
       <div className={`${styles.header} ${styles.spHeader}`}>
@@ -25,22 +48,60 @@ export default function SearchResults({ posts, questions }) {
           </p>
         </div>
         <div className={styles.searchBox}>
-          <Search />
+          <Search value={props.keyword} />
         </div>
       </div>
       <div className={styles.body}>
         <div className={styles.bodyRight}>
-          <div className="flex space-between align-center">
-            <h3 className="title">Posts</h3>
+          <div className="flex space-between mt-16">
+            <h3 className="title">Results</h3>
+            <TextField
+              id="standard-basic"
+              label="Category"
+              variant="standard"
+              name="blockId"
+              className="mobile-none"
+              select
+              value={category}
+              sx={{ width: "100px" }}
+            >
+              {categories.map((category, index) => (
+                <MenuItem
+                  key={index}
+                  value={category}
+                  onClick={() => setCategory(category)}
+                >
+                  {category}
+                </MenuItem>
+              ))}
+            </TextField>
           </div>
-          {posts && posts.map((post) => <Post post={post} key={post.id} />)}
-          <div className="flex space-between align-center ">
-            <h3 className="title">Questions</h3>
+          <div className={styles.posts}>
+            {(category === "Posts" || category === "All") &&
+              posts.map((post, index) => <Card post={post} key={index} />)}
+            {(category === "Lessons" || category === "All") &&
+              lessons.map((lesson, index) => (
+                <Card
+                  key={index}
+                  content={lesson}
+                  to={`courses/${lesson.slug}`}
+                />
+              ))}
           </div>
-          {questions &&
-            questions.map((question) => (
-              <Question key={question.id} question={question} />
+
+          {(category === "Questions" || category === "All") &&
+            questions.map((question, index) => (
+              <Question key={index} question={question} mini={true} />
             ))}
+          <div className="flex justify-center m-8">
+            {loadmore ? (
+              <CircularProgress color="inherit" />
+            ) : (
+              <p className="c-pointer m-0 smallTitle" onClick={handleLoadMore}>
+                Load more
+              </p>
+            )}
+          </div>
         </div>
         <div className="mobile-none">
           <Languages />
@@ -52,12 +113,17 @@ export default function SearchResults({ posts, questions }) {
 
 export const getServerSideProps = async (context) => {
   try {
-    const posts = await axios.get(`${process.env.server}/post`);
-    const questions = await axios.get(`${process.env.server}/question`);
+    const keyword = context.params.keyword;
+
+    const result = await axios.get(
+      `${process.env.server}/search?keyword=${keyword}&limit=6`
+    );
     return {
       props: {
-        posts: posts.data ? posts.data : [],
-        questions: questions.data ? questions.data : [],
+        posts: result.data.posts ? result.data.posts : [],
+        questions: result.data.questions ? result.data.questions : [],
+        lessons: result.data.lessons ? result.data.lessons : [],
+        keyword,
       },
     };
   } catch (err) {

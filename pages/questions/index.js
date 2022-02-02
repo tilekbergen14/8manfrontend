@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../../styles/Posts.module.css";
 import Question from "../../components/Question";
@@ -9,12 +9,13 @@ import QuestionModal from "../../components/Askquestion";
 import Snackbar from "../../components/Snackbar";
 import Languages from "../../components/Languages";
 import CircularProgress from "@mui/material/CircularProgress";
-
+import { useRouter } from "next/router";
 export default function questions(props) {
-  const [questions, setQuestions] = useState([...props.questions]);
+  const [questions, setQuestions] = useState(props.questions);
   const [askquestion, setAskquestion] = useState(false);
   const [questionCreated, setQuestionCreated] = useState(false);
   const [loadmore, setLoadmore] = useState(false);
+  const router = useRouter();
   const handleLoadMore = async () => {
     try {
       setLoadmore(true);
@@ -27,6 +28,10 @@ export default function questions(props) {
       setLoadmore(false);
     }
   };
+  useEffect(() => {
+    setQuestions(props.questions);
+  }, [props.questions]);
+
   return (
     <div className={styles.postsPage}>
       {askquestion && (

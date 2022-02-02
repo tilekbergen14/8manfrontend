@@ -8,6 +8,7 @@ import axios from "axios";
 import Question from "../components/Question";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Link from "next/Link";
+import Footer from "../components/Footer";
 
 export default function Home({ posts, questions }) {
   return (
@@ -24,7 +25,7 @@ export default function Home({ posts, questions }) {
             teach and much more. Join the team.
           </p>
         </div>
-        <div className="flex flex-end w-100">
+        <div className="flex flex-end w-100 tablet-none">
           <div className={styles.headerImgBox}>
             <Image src={homepage} layout="fill" className={styles.headerImg} />
           </div>
@@ -35,32 +36,33 @@ export default function Home({ posts, questions }) {
       </div>
       <div className={styles.body}>
         <div className={styles.bodyRight}>
-          <div className="flex space-between align-center">
-            <h3 className="title">Posts</h3>
+          <h3 className="title">Posts</h3>
+          {posts && posts.map((post) => <Post post={post} key={post.id} />)}
+          <div className="flex flex-end align-center">
             <Link href="posts">
               <h3 className="title flex align-center c-pointer ">
                 See All <ArrowForwardIosIcon fontSize="14px" />
               </h3>
             </Link>
           </div>
-          {posts && posts.map((post) => <Post post={post} key={post.id} />)}
-          <div className="flex space-between align-center ">
-            <h3 className="title">Questions</h3>
+          <h3 className="title">Questions</h3>
+          {questions &&
+            questions.map((question) => (
+              <Question key={question.id} question={question} />
+            ))}
+          <div className="flex flex-end align-center ">
             <Link href="questions">
               <h3 className="title flex align-center c-pointer">
                 See All <ArrowForwardIosIcon fontSize="14px" />
               </h3>
             </Link>
           </div>
-          {questions &&
-            questions.map((question) => (
-              <Question key={question.id} question={question} />
-            ))}
         </div>
         <div className="mobile-none">
           <Languages />
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

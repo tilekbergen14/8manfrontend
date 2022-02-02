@@ -26,6 +26,7 @@ export default function Navbar({ profileImg }) {
       setUser(JSON.parse(localStorage.getItem("user")));
     }
   }, []);
+
   const { data, error } = useSWR(
     `${process.env.server}/user/${user?.id}`,
     async (key) => {

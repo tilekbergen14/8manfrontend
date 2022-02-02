@@ -44,7 +44,7 @@ export default function Askquestion({
         return setError("Title is required!");
       setLoading(true);
       const user = JSON.parse(localStorage.getItem("user"));
-      let result;
+      let result = null;
       if (existedQuestion) {
         result = await axios.put(
           `${process.env.server}/question/${existedQuestion.id}`,
@@ -86,10 +86,10 @@ export default function Askquestion({
       }
 
       if (result) {
+        router.replace(router.asPath);
         setLoading(false);
         setAskquestion(false);
         setQuestionCreated(true);
-        router.replace(router.asPath);
       }
     } catch (err) {
       setLoading(false);

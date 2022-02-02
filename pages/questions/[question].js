@@ -320,7 +320,7 @@ export default function questions({ question }) {
   );
 }
 
-export const getServerSideProps = async (context) => {
+export async function getServerSideProps(context) {
   try {
     const questionId = context.params.question;
     const question = await axios.get(
@@ -338,4 +338,4 @@ export const getServerSideProps = async (context) => {
       notFound: true,
     };
   }
-};
+}

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import styles from "../styles/Home.module.css";
-import Link from "next/Link";
-
-export default function Search({ margin }) {
-  const [keyword, setKeyword] = useState("");
+import { useRouter } from "next/router";
+export default function Search({ margin, value }) {
+  const [keyword, setKeyword] = useState(value ? value : "");
+  const router = useRouter();
+  const handleSearch = () => {
+    router.replace(`/search/${keyword}`);
+  };
   return (
     <div className={styles.search}>
       <input
@@ -15,13 +18,13 @@ export default function Search({ margin }) {
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
       />
-      <Link href={`search/${keyword}`}>
-        <SearchIcon
-          color="primary"
-          sx={{ margin: "8px" }}
-          className="c-pointer"
-        />
-      </Link>
+
+      <SearchIcon
+        onClick={handleSearch}
+        color="primary"
+        sx={{ margin: "8px" }}
+        className="c-pointer"
+      />
     </div>
   );
 }
