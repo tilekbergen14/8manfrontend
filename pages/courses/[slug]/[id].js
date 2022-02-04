@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styles from "../../../styles/Admin.module.css";
 import { useRouter } from "next/router";
-import useSWR from "swr";
-import Link from "next/link";
+import MenuIcon from "@mui/icons-material/Menu";
+import Link from "next/Link";
 import options from "../../../functions/editorOptions";
 import { stateToHTML } from "draft-js-export-html";
 import {
@@ -34,6 +34,7 @@ export default function Course({ lesson, serie, series }) {
     length: lesson.blocks.length,
     loading: false,
   });
+  const [openHB, setOpenHB] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -66,107 +67,168 @@ export default function Course({ lesson, serie, series }) {
   };
   return (
     <div className={styles.page}>
-      <div className={styles.hornav}>
-        <div className={`${styles.fixed}`}>
-          {lesson?.blocks.map((block, blockIndex) => (
-            <div key={blockIndex}>
-              <ListItemButton
-                sx={{
-                  padding: "0px 8px",
-                  textTransform: "uppercase",
-                }}
-                className="b-t-1 pt-8"
-              >
-                <div className="w-100" style={{ minHeight: "25.2px" }}>
-                  <p className="fw-600 m-0 w-100">{`${block.title}`}</p>
-                </div>
-              </ListItemButton>
-              {block.series.map(
-                (serie, index) =>
-                  serie && (
-                    <Link
-                      key={index}
-                      href={`/courses/${lesson.slug}/${serie._id}`}
-                    >
-                      <ListItemButton
-                        key={index}
-                        onClick={() => setState({ ...state, create: "block" })}
-                        sx={{
-                          padding: "0px 8px",
-                          backgroundColor:
-                            serie._id === state.piece.serieId &&
-                            "#757575 !important",
-                          color:
-                            serie._id === state.piece.serieId &&
-                            "#fff !important",
-                        }}
-                      >
-                        <ListItemText
-                          sx={{ textTransform: "capitalize", margin: 0 }}
-                          primary={`${serie.title}`}
-                        />
-                      </ListItemButton>
-                    </Link>
-                  )
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className={styles.body}>
-        <div className="flex">
-          <Typography variant="h4" sx={{ fontWeight: "800", color: "#365acf" }}>
-            {state.piece.title}
-          </Typography>
-        </div>
-        <div className="flex space-between my-16">
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => handleMoving("previous")}
-          >
-            {state.piece.position === 0 ? "Home" : "Previous"}
-          </Button>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => handleMoving("next")}
-          >
-            {state.piece.position === series.length - 1 ? "Home" : "Next"}
-          </Button>
-        </div>
-        <div
-          style={{
-            margin: "24px 0",
-          }}
-          dangerouslySetInnerHTML={{ __html: state.piece.body }}
-        ></div>
-        <div className="flex space-between my-16">
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => handleMoving("previous")}
-          >
-            {state.piece.position === 0 ? "Home" : "Previous"}
-          </Button>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={() => handleMoving("next")}
-          >
-            {state.piece.position === series.length - 1 ? "Home" : "Next"}
-          </Button>
-        </div>
-        {state.loading && <Backdrop loading={state.loading} />}
-      </div>
-      <div className={`${styles.rightSide} tablet-none`}>Rigth side</div>
-      {error && (
-        <Snackbar
-          open={error}
-          message={error}
-          color="error"
-          setOpen={setError}
+      <div className={`${styles.navbar2} flex align-center space-between`}>
+        <MenuIcon
+          color="success"
+          className="c-pointer"
+          onClick={() => setOpenHB(!openHB)}
         />
+        <Typography variant="h6" sx={{ fontWeight: "800", color: "#406343" }}>
+          {lesson.title}
+        </Typography>
+      </div>
+      <div className="flex flex-1">
+        <div className={`${styles.hornav} tablet-none`}>
+          <div className={`${styles.fixed}`}>
+            {lesson?.blocks.map((block, blockIndex) => (
+              <div key={blockIndex}>
+                <ListItemButton
+                  sx={{
+                    padding: "0px 8px",
+                    textTransform: "uppercase",
+                  }}
+                  className="b-t-1 pt-8"
+                >
+                  <div className="w-100" style={{ minHeight: "25.2px" }}>
+                    <p className="fw-600 m-0 w-100 c-initial">
+                      {`${block.title}`}
+                    </p>
+                  </div>
+                </ListItemButton>
+                {block.series.map(
+                  (serie, index) =>
+                    serie && (
+                      <Link
+                        key={index}
+                        href={`/courses/${lesson.slug}/${serie._id}`}
+                      >
+                        <ListItemButton
+                          key={index}
+                          onClick={() =>
+                            setState({ ...state, create: "block" })
+                          }
+                          sx={{
+                            padding: "0px 8px",
+                            backgroundColor:
+                              serie._id === state.piece.serieId &&
+                              "#757575 !important",
+                            color:
+                              serie._id === state.piece.serieId &&
+                              "#fff !important",
+                          }}
+                        >
+                          <ListItemText
+                            sx={{ textTransform: "capitalize", margin: 0 }}
+                            primary={`${serie.title}`}
+                          />
+                        </ListItemButton>
+                      </Link>
+                    )
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={styles.body}>
+          <div className="flex">
+            <Typography
+              variant="h4"
+              className="title-04"
+              sx={{ fontWeight: "800" }}
+            >
+              {state.piece.title}
+            </Typography>
+          </div>
+
+          <div
+            style={{
+              margin: "24px 0",
+            }}
+            dangerouslySetInnerHTML={{ __html: state.piece.body }}
+          ></div>
+          <div className="flex space-between my-16">
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => handleMoving("previous")}
+            >
+              {state.piece.position === 0 ? "Home" : "Previous"}
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => handleMoving("next")}
+            >
+              {state.piece.position === series.length - 1 ? "Home" : "Next"}
+            </Button>
+          </div>
+          {state.loading && <Backdrop loading={state.loading} />}
+        </div>
+        <div className={`${styles.rightSide} tablet-none`}>Rigth side</div>
+        {error && (
+          <Snackbar
+            open={error}
+            message={error}
+            color="error"
+            setOpen={setError}
+          />
+        )}
+      </div>
+      {openHB && (
+        <div className={`${styles.tabletHornav} `}>
+          <div className={`${styles.fixed}`}>
+            {lesson?.blocks.map((block, blockIndex) => (
+              <div key={blockIndex}>
+                <ListItemButton
+                  sx={{
+                    padding: "0px 8px",
+                    textTransform: "uppercase",
+                  }}
+                  className="b-t-1 pt-8 c-initial"
+                >
+                  <div className="w-100" style={{ minHeight: "25.2px" }}>
+                    <p className="fw-600 m-0 w-100">{`${block.title}`}</p>
+                  </div>
+                </ListItemButton>
+                {block.series.map(
+                  (serie, index) =>
+                    serie && (
+                      <Link
+                        key={index}
+                        href={`/courses/${lesson.slug}/${serie._id}`}
+                      >
+                        <ListItemButton
+                          key={index}
+                          onClick={() => {
+                            setState({ ...state, create: "block" });
+                            setOpenHB(false);
+                          }}
+                          sx={{
+                            padding: "0px 8px",
+                            backgroundColor:
+                              serie._id === state.piece.serieId &&
+                              "#757575 !important",
+                            color:
+                              serie._id === state.piece.serieId &&
+                              "#fff !important",
+                          }}
+                        >
+                          <ListItemText
+                            sx={{ textTransform: "capitalize", margin: 0 }}
+                            primary={`${serie.title}`}
+                          />
+                        </ListItemButton>
+                      </Link>
+                    )
+                )}
+              </div>
+            ))}
+          </div>
+          <div
+            onClick={() => setOpenHB(!openHB)}
+            className="flex-1 h-100"
+          ></div>
+        </div>
       )}
     </div>
   );

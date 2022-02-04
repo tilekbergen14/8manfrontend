@@ -1,20 +1,20 @@
-.mepage {
-  padding: 24px;
-  display: flex;
-}
-
 .content {
   display: grid;
   width: 100%;
-  border-radius: 8px;
   margin-left: 316px;
+  padding: 24px;
+  min-height: 100%;
+}
+.mepage {
+  display: flex;
+  min-height: 100%;
 }
 
 .hornav {
-  background-color: #f2f4f7;
-  padding: 0 16px;
-  position: fixed;
   width: 300px;
+  background-color: rgb(255, 255, 255);
+  position: absolute;
+  height: calc(100% - 72px);
 }
 
 @media screen and (max-width: 900px) {
@@ -25,6 +25,7 @@
     display: none;
   }
   .content {
+    padding-top: 8px;
     margin-left: 0;
   }
 }

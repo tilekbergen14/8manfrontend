@@ -1,36 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, MenuItem } from "@mui/material";
 import styles from "../../styles/Courses.module.css";
 import axios from "axios";
 import Card from "../../components/Card";
 import Search from "../../components/Search";
 
-export default function index({ lessons }) {
-  const [category, setCategory] = useState("All");
-  const categories = ["All", "Frontend", "Backend"];
+export default function index(props) {
+  const [keyword, setKeyword] = useState("");
+  const [lessons, setLessons] = useState(props.lessons);
+  useEffect(() => {
+    let filteredLessons = [];
+    if (keyword !== "") {
+      for (let i = 0; i < props.lessons.length; i++) {
+        if (
+          props.lessons[i].title.toUpperCase().indexOf(keyword.toUpperCase()) >
+          -1
+        ) {
+          filteredLessons.push(props.lessons[i]);
+        }
+      }
+      setLessons(filteredLessons);
+    } else {
+      setLessons(props.lessons);
+    }
+  }, [keyword]);
+
   return (
     <div className={`${styles.body} container m-auto`}>
       <div className="p-container">
         <div className="flex space-between align-center py-24">
-          <div style={{ maxWidth: "600px", width: "100%" }}>
-            <Search margin="8px" />
+          <div style={{ width: "100%" }}>
+            <Search margin="8px" keyword={keyword} setKeyword={setKeyword} />
           </div>
-          <TextField
-            id="standard-basic"
-            label="Category"
-            variant="standard"
-            name="blockId"
-            className="mobile-none"
-            select
-            value={category}
-            sx={{ width: "100px" }}
-          >
-            {categories.map((category, index) => (
-              <MenuItem key={index} value={category}>
-                {category}
-              </MenuItem>
-            ))}
-          </TextField>
         </div>
         <div className={`${styles.gridView}`}>
           {lessons.map((lesson, index) => (

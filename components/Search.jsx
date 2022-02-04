@@ -2,21 +2,26 @@ import React, { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import styles from "../styles/Home.module.css";
 import { useRouter } from "next/router";
-export default function Search({ margin, value }) {
-  const [keyword, setKeyword] = useState(value ? value : "");
+export default function Search(props) {
   const router = useRouter();
+  const [keyword, setKeyword] = useState(props.keyword ? props.keyword : "");
   const handleSearch = () => {
-    router.replace(`/search/${keyword}`);
+    if (props.setKeyword) {
+    } else {
+      router.replace(`/search/${keyword}`);
+    }
   };
   return (
     <div className={styles.search}>
       <input
         placeholder="Search..."
-        style={{ margin: margin }}
+        style={{ margin: props.margin }}
         className={styles.input}
         type="text"
         value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
+        onChange={(e) => {
+          setKeyword(e.target.value), props.setKeyword(e.target.value);
+        }}
       />
 
       <SearchIcon

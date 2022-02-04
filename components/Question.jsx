@@ -52,7 +52,7 @@ export default function Question({ question, mini }) {
           </div>
         </div>
         <div className={styles.body}>
-          <Link href={`/questions/${question.id}`}>
+          <Link href={`/questions/${question._id}`}>
             <h2 className={styles.title}>{question.title}</h2>
           </Link>
 

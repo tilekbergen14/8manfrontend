@@ -3,7 +3,7 @@ import styles from "../../styles/Home.module.css";
 import Image from "next/image";
 import homepage from "../../public/images/homepage.png";
 import Search from "../../components/Search";
-import Languages from "../../components/Languages";
+import Links from "../../components/Links";
 import { TextField, MenuItem, CircularProgress } from "@mui/material";
 import axios from "axios";
 import Question from "../../components/Question";
@@ -104,7 +104,7 @@ export default function SearchResults(props) {
           </div>
         </div>
         <div className="mobile-none">
-          <Languages />
+          <Links />
         </div>
       </div>
     </div>

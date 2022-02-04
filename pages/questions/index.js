@@ -7,25 +7,43 @@ import Image from "next/image";
 import adbox from "../../public/images/adbox.png";
 import QuestionModal from "../../components/Askquestion";
 import Snackbar from "../../components/Snackbar";
-import Languages from "../../components/Languages";
+import Languages from "../../components/Links";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/router";
+import { route } from "next/dist/server/router";
 export default function questions(props) {
   const [questions, setQuestions] = useState(props.questions);
   const [askquestion, setAskquestion] = useState(false);
   const [questionCreated, setQuestionCreated] = useState(false);
   const [loadmore, setLoadmore] = useState(false);
+  const [category, setCategory] = useState("latest");
   const router = useRouter();
+
   const handleLoadMore = async () => {
     try {
       setLoadmore(true);
       const { data } = await axios.get(
-        `${process.env.server}/question?questions=${questions?.length}`
+        `${process.env.server}/question?offset=${questions?.length}`
       );
       setQuestions([...questions, ...data]);
       setLoadmore(false);
     } catch (err) {
       setLoadmore(false);
+    }
+  };
+
+  const handleQuestions = async (e) => {
+    if (e === "latest") {
+      setCategory("latest");
+      setQuestions(props.questions);
+      router.replace(router.asPath);
+    }
+    if (e === "top") {
+      setCategory("top");
+      const { data } = await axios.get(
+        `${process.env.server}/question?category=top`
+      );
+      setQuestions(data);
     }
   };
   useEffect(() => {
@@ -57,10 +75,20 @@ export default function questions(props) {
       <div className={styles.second}>
         <div className="flex space-between">
           <div className="flex">
-            <Button variant="text" sx={{ textTransform: "none" }}>
+            <Button
+              onClick={() => handleQuestions("latest")}
+              variant="text"
+              color={category === "latest" ? "info" : "primary"}
+              sx={{ textTransform: "none" }}
+            >
               Latest
             </Button>
-            <Button variant="text" sx={{ textTransform: "none" }}>
+            <Button
+              onClick={() => handleQuestions("top")}
+              variant="text"
+              color={category === "top" ? "info" : "primary"}
+              sx={{ textTransform: "none" }}
+            >
               Top
             </Button>
           </div>

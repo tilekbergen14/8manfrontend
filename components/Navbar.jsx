@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,7 +12,7 @@ import Avatar from "@mui/material/Avatar";
 import Link from "next/Link";
 import useSWR from "swr";
 import axios from "axios";
-
+import { useRouter } from "next/router";
 export default function Navbar({ profileImg }) {
   const [left, setLeft] = React.useState(false);
 
@@ -20,13 +20,16 @@ export default function Navbar({ profileImg }) {
     setLeft(open);
   };
   const [user, setUser] = React.useState(null);
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
+  const handleScroll = () => {
+    console.log("hello world");
+  };
+  useEffect(() => {
+    if (typeof window !== "undefined" && !user) {
       setUser(JSON.parse(localStorage.getItem("user")));
     }
-  }, []);
-
+    window.addEventListener("scroll", handleScroll);
+  });
+  const router = useRouter();
   const { data, error } = useSWR(
     `${process.env.server}/user/${user?.id}`,
     async (key) => {
@@ -37,6 +40,10 @@ export default function Navbar({ profileImg }) {
       }
     }
   );
+  if (error) {
+    localStorage.clear();
+    router.push("/");
+  }
   return (
     <Box sx={{ flexGrow: 1 }} className={styles.stick}>
       <AppBar position="sticky" className={styles.appbar}>

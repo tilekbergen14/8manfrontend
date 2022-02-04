@@ -13,7 +13,7 @@ import MyEditor from "../../components/Editor";
 import { EditorState, convertFromRaw, convertToRaw, Editor } from "draft-js";
 import axios from "axios";
 import Backdrop from "../../components/Backdrop";
-import Languages from "../../components/Languages";
+import Links from "../../components/Links";
 import Delete from "../../components/Delete";
 import Snackbar from "../../components/Snackbar";
 import MoreHoriz from "@mui/icons-material/MoreHoriz";
@@ -107,7 +107,7 @@ export default function questions({ question }) {
   return (
     <div className={styles.postsPage}>
       <div className={styles.first}>
-        <Languages />
+        <Links />
       </div>
       <div className={styles.second}>
         <h3 className="title" style={{ margin: "8px 0" }}>

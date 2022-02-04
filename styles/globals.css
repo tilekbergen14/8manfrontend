@@ -134,6 +134,9 @@ p {
   font-weight: 600;
   font-size: 16px;
 }
+.title-04 {
+  color: #040424;
+}
 .smalltitle {
   font-size: 15px;
 }
@@ -165,7 +168,7 @@ p {
   cursor: pointer;
 }
 .c-initial {
-  cursor: initial;
+  cursor: default !important;
 }
 .fw-600 {
   font-weight: 600 !important;
@@ -176,6 +179,11 @@ p {
 .d-none {
   display: none;
 }
+.adbox-300-600 {
+  height: 600px;
+  width: 100%;
+  position: relative;
+}
 .imgUploadBox {
   display: grid;
   place-items: center;
@@ -184,6 +192,7 @@ p {
   font-size: 20px;
   margin: 0;
   position: relative;
+  background-color: #dad5d5;
 }
 .m-auto {
   margin: auto;

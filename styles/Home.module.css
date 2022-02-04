@@ -4,10 +4,10 @@
 .header {
   padding: 24px;
   display: grid;
-  height: 400px;
+  min-height: 400px;
   place-items: center;
   grid-template-columns: 1fr 1fr;
-  background-color: #040424;
+  background: linear-gradient(90deg, #2d9caf, #140009);
   position: relative;
 }
 .openingText {
@@ -26,15 +26,15 @@
 }
 .learn {
   color: #fd3a69;
-  text-shadow: 4px 4px #e43a19;
+  text-shadow: 4px 4px #000000;
 }
 .teach {
   color: #e43a19;
-  text-shadow: 4px 4px #fd3a69;
+  text-shadow: 4px 4px #000000;
 }
 .explore {
   color: #406343;
-  text-shadow: 4px 4px #fd3a69;
+  text-shadow: 4px 4px #000000;
 }
 .optSmall {
   margin: 0;
@@ -74,6 +74,8 @@
   margin: 16px;
   width: 100%;
 }
+.third {
+}
 @media screen and (max-width: 900px) {
   .header {
     grid-template-columns: 1fr;
@@ -101,7 +103,7 @@
   margin-top: 16px;
   display: grid;
   grid-gap: 16px;
-  grid-template-columns: 0.7fr 0.3fr;
+  grid-template-columns: 1fr 300px;
 }
 .bodyRight {
   display: grid;

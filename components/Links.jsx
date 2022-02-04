@@ -54,6 +54,7 @@ const styles = {
     height: "max-content",
     padding: "8px 4px",
     borderRadius: "8px",
+    width: "100%",
   },
   languages: {
     display: "flex",
@@ -63,3 +64,15 @@ const styles = {
     margin: "4px",
   },
 };
+
+// export const getStaticProps = async () => {
+//   try {
+//     return {
+//       props: { questions: questions.data ? questions.data : [] },
+//     };
+//   } catch (err) {
+//     return {
+//       notFound: true,
+//     };
+//   }
+// };

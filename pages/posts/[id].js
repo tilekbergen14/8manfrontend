@@ -149,8 +149,8 @@ export default function Post({ post }) {
 
 export const getServerSideProps = async (context) => {
   try {
-    const postId = context.params.post;
-    const post = await axios.get(`${process.env.server}/post/${postId}`);
+    const id = context.params.id;
+    const post = await axios.get(`${process.env.server}/post/${id}`);
     if (post) {
       return {
         props: {

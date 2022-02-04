@@ -2,13 +2,14 @@ import styles from "../styles/Home.module.css";
 import Image from "next/image";
 import homepage from "../public/images/homepage.png";
 import Search from "../components/Search";
-import Languages from "../components/Languages";
+import Links from "../components/Links";
 import Post from "../components/Post";
 import axios from "axios";
 import Question from "../components/Question";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Link from "next/Link";
 import Footer from "../components/Footer";
+import adbox from "/public/images/adbox.png";
 
 export default function Home({ posts, questions }) {
   return (
@@ -58,8 +59,11 @@ export default function Home({ posts, questions }) {
             </Link>
           </div>
         </div>
-        <div className="mobile-none">
-          <Languages />
+        <div className={`mobile-none ${styles.third}`}>
+          <Links />
+          <div className="adbox-300-600 mt-8">
+            <Image src={adbox} layout="fill" className="b-radius-8" />
+          </div>
         </div>
       </div>
       <Footer />

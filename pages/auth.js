@@ -37,6 +37,7 @@ export default function auth() {
 
   const handleLogin = () => {
     setSignin((signin) => !signin);
+    setError(null);
     setUserData({
       ...userData,
       email: "",
