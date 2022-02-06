@@ -17,7 +17,7 @@ import Link from "next/link";
 export default function TemporaryDrawer({ toggleDrawer, left, user }) {
   const list = () => (
     <Box
-      sx={{ width: 500 }}
+      sx={{ width: "300px" }}
       role="presentation"
       onClick={() => toggleDrawer(false)}
     >

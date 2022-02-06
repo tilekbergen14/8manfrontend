@@ -82,7 +82,7 @@ export default function Navbar({ profileImg }) {
                     className={`${styles.link} c-pointer`}
                     variant="outlined"
                     color="secondary"
-                    sx={{ textTransform: "none" }}
+                    sx={{ textTransform: "none", marginLeft: "16px" }}
                   >
                     Login
                   </Button>

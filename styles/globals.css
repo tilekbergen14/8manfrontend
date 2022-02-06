@@ -304,8 +304,8 @@ p {
 /******drawer*******/
 
 @media screen and (max-width: 900px) {
-  .css-4t3x6l-MuiPaper-root-MuiDrawer-paper {
-    width: 80%;
+  .drawerPaper {
+    width: 300px;
     overflow-x: hidden;
   }
   p {

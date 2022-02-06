@@ -1,6 +1,10 @@
 .stick {
   width: 100%;
   height: 72px;
+  position: relative;
+}
+.navbar {
+  height: 72px;
 }
 .appbar {
   position: fixed;
@@ -12,7 +16,7 @@
   list-style: none;
 }
 .menu {
-  display: none;
+  display: none !important;
 }
 .link {
   margin-left: 16px;
@@ -26,7 +30,7 @@
     padding: 8px !important;
   }
   .menu {
-    display: block;
+    display: block !important;
   }
   .links {
     display: none;
