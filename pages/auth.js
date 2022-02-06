@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import { useRouter } from "next/router";
-
+import Head from "next/head";
 export default function auth() {
   const [visibility, setVisibility] = useState({
     password1: true,
@@ -117,6 +117,9 @@ export default function auth() {
 
   return (
     <div>
+      <Head>
+        <title>Тіркелу, Кіру | Программалау, кодтау, онлайн мектеп</title>
+      </Head>
       <Grid
         container
         sx={{

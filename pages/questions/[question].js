@@ -20,7 +20,7 @@ import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import EditQuestion from "../../components/Askquestion";
-import Edit from "@mui/icons-material/Edit";
+import Head from "next/head";
 
 export default function questions({ question }) {
   const toolbar = ["blockType", "list", "link"];
@@ -106,6 +106,9 @@ export default function questions({ question }) {
 
   return (
     <div className={styles.postsPage}>
+      <Head>
+        <title>{question.title}</title>
+      </Head>
       <div className={styles.first}>
         <Links />
       </div>

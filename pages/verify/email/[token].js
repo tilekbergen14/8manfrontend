@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import { useRouter } from "next/router";
-
+import Head from "next/head";
 export default function VerifyEmail({ user }) {
   const router = useRouter();
   useEffect(() => {
@@ -13,6 +13,9 @@ export default function VerifyEmail({ user }) {
   }, []);
   return (
     <div className="flex flex-column justify-center align-center h-100">
+      <Head>
+        <title>Программалау, кодтау, онлайн мектеп</title>
+      </Head>
       <p>Once we are verified you will be directed to the homepage!</p>
       <CircularProgress />
     </div>

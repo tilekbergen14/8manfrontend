@@ -1,7 +1,7 @@
 module.exports = {
   reactStrictMode: true,
   env: {
-    server: "http://31.170.165.99/api",
+    server: "http://localhost:5000",
   },
   images: {
     domains: ["localhost"],

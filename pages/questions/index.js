@@ -10,7 +10,7 @@ import Snackbar from "../../components/Snackbar";
 import Languages from "../../components/Links";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/router";
-import { route } from "next/dist/server/router";
+import Head from "next/head";
 export default function questions(props) {
   const [questions, setQuestions] = useState(props.questions);
   const [askquestion, setAskquestion] = useState(false);
@@ -52,6 +52,9 @@ export default function questions(props) {
 
   return (
     <div className={styles.postsPage}>
+      <Head>
+        <title>Білмегеніңді сұра | Программалау, кодтау, онлайн мектеп</title>
+      </Head>
       {askquestion && (
         <QuestionModal
           setAskquestion={setAskquestion}

@@ -20,6 +20,7 @@ import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import MyEditor from "../../../components/Editor";
 import axios from "axios";
 import Backdrop from "../../../components/Backdrop";
+import Head from "next/head";
 
 export default function Course({ lesson, serie, series }) {
   const router = useRouter();
@@ -67,6 +68,9 @@ export default function Course({ lesson, serie, series }) {
   };
   return (
     <div className={styles.page}>
+      <Head>
+        <title>{lesson.title}</title>
+      </Head>
       <div className={`${styles.navbar2} flex align-center space-between`}>
         <MenuIcon
           color="success"

@@ -4,6 +4,7 @@ import styles from "../../styles/Courses.module.css";
 import axios from "axios";
 import Card from "../../components/Card";
 import Search from "../../components/Search";
+import Head from "next/head";
 
 export default function index(props) {
   const [keyword, setKeyword] = useState("");
@@ -27,6 +28,9 @@ export default function index(props) {
 
   return (
     <div className={`${styles.body} container m-auto`}>
+      <Head>
+        <title>Туториялдар | Программалау, кодтау, онлайн мектеп</title>
+      </Head>
       <div className="p-container">
         <div className="flex space-between align-center py-24">
           <div style={{ width: "100%" }}>

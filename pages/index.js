@@ -10,10 +10,14 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Link from "next/link";
 import Footer from "../components/Footer";
 import adbox from "/public/images/adbox.png";
+import Head from "next/head";
 
 export default function Home({ posts, questions }) {
   return (
     <div className={styles.homepage}>
+      <Head>
+        <title>Басты бет | Программалау, кодтау</title>
+      </Head>
       <div className={styles.header}>
         <div className={styles.openingText}>
           <h1 className={styles.bigText}>
@@ -28,7 +32,12 @@ export default function Home({ posts, questions }) {
         </div>
         <div className="flex flex-end w-100 tablet-none">
           <div className={styles.headerImgBox}>
-            <Image src={homepage} layout="fill" className={styles.headerImg} />
+            <Image
+              src={homepage}
+              layout="fill"
+              className={styles.headerImg}
+              priority
+            />
           </div>
         </div>
         <div className={styles.searchBox}>
@@ -59,10 +68,10 @@ export default function Home({ posts, questions }) {
             </Link>
           </div>
         </div>
-        <div className={`mobile-none ${styles.third}`}>
+        <div className={`tablet-none ${styles.third}`}>
           <Links />
           <div className="adbox-300-600 mt-8">
-            <Image src={adbox} layout="fill" className="b-radius-8" />
+            <Image src={adbox} layout="fill" className="b-radius-8" priority />
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import Image from "next/image";
 import adbox from "../../public/images/adbox.png";
 import Languages from "../../components/Links";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export default function posts(props) {
   const [loadmore, setLoadmore] = useState(false);
@@ -49,8 +50,14 @@ export default function posts(props) {
 
   return (
     <div className={styles.postsPage}>
+      <Head>
+        <title>Постлар | Программалау, кодтау, онлайн мектеп</title>
+      </Head>
       <div className={styles.first}>
         <Languages />
+        <div className={styles.ad}>
+          <Image src={adbox} layout="fill" className="b-radius-8" />
+        </div>
       </div>
       <div className={styles.second}>
         <div className="flex">
@@ -71,8 +78,8 @@ export default function posts(props) {
             Top
           </Button>
         </div>
-        {posts.map((post) => (
-          <Post key={post.id} post={post} />
+        {posts.map((post, index) => (
+          <Post key={index} post={post} />
         ))}
         <div className="flex justify-center m-8">
           {loadmore ? (

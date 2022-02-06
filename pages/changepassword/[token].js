@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useRouter } from "next/router";
 import Snackbar from "../../components/Snackbar";
+import Head from "next/head";
 
 export default function Password() {
   const [visibility, setVisibility] = useState({
@@ -68,6 +69,9 @@ export default function Password() {
         height: "auto",
       }}
     >
+      <Head>
+        <title>Құпиясөзді өзгерту | Программалау, кодтау, онлайн мектеп</title>
+      </Head>
       <Paper
         elevation={3}
         sx={{

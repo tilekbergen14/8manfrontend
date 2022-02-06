@@ -13,7 +13,7 @@ import moment from "moment";
 import Footer from "../../components/Footer";
 import Card from "../../components/Card";
 import options from "../../functions/editorOptions";
-
+import Head from "next/head";
 export default function Post({ post }) {
   const [liked, setLiked] = useState(post.liked);
   const [likes, setLikes] = useState(post.likes);
@@ -61,6 +61,9 @@ export default function Post({ post }) {
 
   return (
     <div className={styles.postpage}>
+      <Head>
+        <title>{post.title}</title>
+      </Head>
       <div className={styles.waveBox}>
         <Image className={styles.wave} src={wave} layout="fill" />
       </div>
