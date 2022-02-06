@@ -8,6 +8,7 @@ import {
   ListItem,
   ListItemText,
   List,
+  Typography,
   CircularProgress,
 } from "@mui/material";
 import Image from "next/image";
@@ -15,22 +16,29 @@ import useSWR from "swr";
 import axios from "axios";
 import Skeleton from "../components/Skeleton";
 import Snackbar from "../components/Snackbar";
+import Profiler from "../components/Profiler";
 import Backdrop from "../components/Backdrop";
 import { useRouter } from "next/router";
+import MenuIcon from "@mui/icons-material/Menu";
 
 export default function me() {
-  const imageInput = useRef(null);
+  const [showProfiler, setShowProfiler] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [base64img, setBase64img] = useState("");
   const [updated, setUpdated] = useState(false);
   const [questions, setQuestions] = useState(null);
   const [localUser, setLocalUser] = useState(null);
-  const [info, setInfo] = useState({});
+  const [info, setInfo] = useState(null);
+  const [openHB, setOpenHB] = useState(false);
   const [menu, setMenu] = useState("information");
   const [readOnly, setReadOnly] = useState({
     username: true,
     email: true,
     password: true,
+  });
+  const [initialData, setInitialData] = useState({
+    username: "",
+    email: "",
+    password: "",
   });
   const router = useRouter();
   if (typeof window !== "undefined") {
@@ -40,51 +48,14 @@ export default function me() {
   const handleChange = async (e) => {
     try {
       if (e.target) {
-        if (e.target.name === "imgUrl") {
-          setLoading(true);
-
-          const img = e.target.files[0];
-          const type = e.target.files[0].type;
-          if (
-            type === "image/jpg" ||
-            type === "image/png" ||
-            type === "image/jpeg" ||
-            type === "image/jfif"
-          ) {
-            const formData = new FormData();
-            formData.append("file", img);
-            const { data } = await axios.post(
-              `${process.env.server}/image`,
-              formData
-            );
-
-            const result = await axios.put(
-              `${process.env.server}/user`,
-              {
-                profileImg: `${process.env.server}/${data.imageUrl}`,
-              },
-              {
-                headers: {
-                  authorization: "Bearer " + localUser?.token,
-                },
-              }
-            );
-            if (result) {
-              setUpdated(true);
-              setLoading(false);
-            }
-            var reader = new FileReader();
-            reader.onloadend = function () {
-              setBase64img(reader.result);
-            };
-            reader.readAsDataURL(img);
-          }
-        } else {
-          setInfo({
-            ...info,
-            [e.target.name]: e.target.value,
-          });
-        }
+        setInfo({
+          ...info,
+          [e.target.name]: e.target.value,
+        });
+        setInitialData({
+          ...initialData,
+          [e.target.name]: e.target.value,
+        });
       }
     } catch (err) {
       console.log(err);
@@ -106,16 +77,22 @@ export default function me() {
       }
     }
   };
-  useEffect(() => {
-    setLocalUser(JSON.parse(localStorage.getItem("user")));
-  }, [base64img]);
-
-  const { data, error } = useSWR(
+  let { data, error } = useSWR(
     `${process.env.server}/user/${localUser?.id}`,
     async (key) => {
       return await axios.get(key);
     }
   );
+  useEffect(() => {
+    if (data) {
+      setInitialData({
+        username: data.data.username,
+        email: data.data.email,
+        password: "",
+      });
+    }
+    setLocalUser(JSON.parse(localStorage.getItem("user")));
+  }, [data]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -123,246 +100,362 @@ export default function me() {
   };
 
   const handleUpdate = async (e) => {
+    setReadOnly((readOnly) => {
+      return {
+        ...readOnly,
+        update: true,
+        [e]: !readOnly[e],
+      };
+    });
+  };
+
+  const saveChangesToServer = async () => {
     try {
-      if (!readOnly[e]) {
-        setLoading(true);
-        const result = await axios.put(
-          `${process.env.server}/user`,
-          { ...info },
-          {
-            headers: {
-              authorization: "Bearer " + localUser?.token,
-            },
-          }
-        );
-        if (result) {
-          setUpdated(true);
-          setLoading(false);
-        }
-      }
-      setReadOnly((readOnly) => {
-        return {
-          ...readOnly,
-          [e]: !readOnly[e],
-        };
+      setLoading(true);
+      const result = await axios.put(`${process.env.server}/user`, info, {
+        headers: {
+          authorization: "Bearer " + localUser.token,
+        },
+      });
+      setLoading(false);
+      setUpdated(true);
+      setInfo(null);
+      router.replace(router.asPath);
+      setReadOnly({
+        username: true,
+        email: true,
+        password: true,
       });
     } catch (err) {
       setLoading(false);
+      console.log(err);
     }
   };
   return (
     <div className={styles.mepage}>
-      <div className={`${styles.hornav}`}>
-        <List>
-          <ListItem button onClick={() => setMenu("information")}>
-            <ListItemText primary="Information" />
-          </ListItem>
-          <ListItem button onClick={() => handleMenu("questions")}>
-            <ListItemText primary="My questions" />
-          </ListItem>
-          <ListItem button onClick={() => handleMenu("courses")}>
-            <ListItemText primary="My courses" />
-          </ListItem>
-        </List>
+      <div className={`${styles.navbar2} flex align-center space-between`}>
+        <MenuIcon
+          color="success"
+          className="c-pointer"
+          onClick={() => setOpenHB(!openHB)}
+        />
+        <Typography variant="h6" sx={{ fontWeight: "800", color: "#406343" }}>
+          Hello
+        </Typography>
       </div>
-      <div className={styles.content}>
-        {menu === "information" && (
-          <div>
-            <p id="aboutyou" className="title" style={{ margin: "0" }}>
-              Information
-            </p>
-
-            <div className="flex">
-              {data ? (
-                <div className="flex">
+      <div className="flex">
+        <div className={`${styles.hornav}`}>
+          <List style={{ paddingTop: 0 }}>
+            <ListItem
+              selected={menu === "information"}
+              button
+              onClick={() => setMenu("information")}
+            >
+              <ListItemText primary="Information" />
+            </ListItem>
+            <ListItem
+              selected={menu === "questions"}
+              button
+              onClick={() => handleMenu("questions")}
+            >
+              <ListItemText primary="My questions" />
+            </ListItem>
+            <ListItem
+              selected={menu === "courses"}
+              button
+              onClick={() => handleMenu("courses")}
+            >
+              <ListItemText primary="My courses" />
+            </ListItem>
+          </List>
+          <div className="p-16">
+            <Button
+              variant="contained"
+              fullWidth
+              color={localUser ? "danger" : "success"}
+              onClick={
+                localUser
+                  ? handleLogout
+                  : () => {
+                      router.push("/auth");
+                    }
+              }
+            >
+              {localUser ? "Log out" : "Sign up"}
+            </Button>
+          </div>
+        </div>
+        <div className={styles.content}>
+          {menu === "information" && (
+            <div>
+              <p id="aboutyou" className="title" style={{ margin: "0" }}>
+                Information
+              </p>
+              {showProfiler && (
+                <Profiler setShowProfiler={setShowProfiler} setInfo={setInfo} />
+              )}
+              <div className={styles.information}>
+                {data ? (
+                  <div className="flex">
+                    <div
+                      onClick={() => setShowProfiler(true)}
+                      style={{
+                        aspectRatio: "1/1",
+                        margin: "16px 8px 0 0",
+                      }}
+                      className={`${styles.imgUploadBox} c-pointer imgUploadBox flex justify-center align-center`}
+                    >
+                      {data?.data?.profile || info?.profileImg ? (
+                        <Image
+                          src={
+                            info?.profileImg
+                              ? info.profileImg
+                              : data.data.profile
+                          }
+                          layout="fill"
+                          className={styles.image}
+                        />
+                      ) : (
+                        "Choose profile"
+                      )}
+                    </div>
+                  </div>
+                ) : (
                   <div
-                    onClick={() => {
-                      imageInput.current?.click();
-                    }}
+                    className={`${styles.imgUploadBox} `}
                     style={{
                       aspectRatio: "1/1",
-                      height: "214px",
-                      margin: "16px 8px 0 0",
-                      border: (data.data.profile || base64img) && "none",
+                      margin: "0",
+                      marginRight: "8px",
                     }}
-                    className={`c-pointer imgUploadBox flex justify-center align-center`}
                   >
-                    {base64img !== "" || data.data.profile ? (
-                      <Image
-                        src={base64img ? base64img : data.data.profile}
-                        layout="fill"
-                      />
-                    ) : (
-                      <p>Profile image</p>
-                    )}
+                    <Skeleton width="100%" height="100%" aspectRatio="1/1" />
                   </div>
+                )}
+                <div style={{ width: "100%" }}>
+                  {data ? (
+                    <TextField
+                      id="standard-basic"
+                      label="Name"
+                      variant="standard"
+                      value={initialData.username}
+                      margin="normal"
+                      fullWidth
+                      name="username"
+                      onChange={handleChange}
+                      variant="outlined"
+                      InputProps={{
+                        readOnly: readOnly.username,
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Button
+                              size="small"
+                              variant="contained"
+                              color={readOnly.username ? "secondary" : "info"}
+                              onClick={() => handleUpdate("username")}
+                            >
+                              {readOnly.username ? "Edit" : "Save"}
+                            </Button>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  ) : (
+                    <Skeleton height="61px" width="100%" />
+                  )}
+                  {data ? (
+                    <TextField
+                      fullWidth
+                      name="email"
+                      id="standard-basic"
+                      label="Email"
+                      variant="outlined"
+                      margin="normal"
+                      onChange={handleChange}
+                      value={initialData.email}
+                      InputProps={{
+                        readOnly: true,
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Button
+                              size="small"
+                              variant="contained"
+                              color={readOnly.email ? "secondary" : "info"}
+                              onClick={() => handleUpdate("email")}
+                            >
+                              {readOnly.email ? "Edit" : "Save"}
+                            </Button>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  ) : (
+                    <Skeleton height="61px" width="100%" />
+                  )}
+                  {data ? (
+                    <TextField
+                      id="standard-basic"
+                      variant="outlined"
+                      name="password"
+                      label="Change password"
+                      margin="normal"
+                      onChange={handleChange}
+                      fullWidth
+                      InputProps={{
+                        readOnly: true,
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Button
+                              size="small"
+                              variant="contained"
+                              color={readOnly.password ? "secondary" : "info"}
+                              onClick={() => handleUpdate("password")}
+                            >
+                              {readOnly.password ? "Edit" : "Save"}
+                            </Button>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  ) : (
+                    <Skeleton height="61px" width="100%" />
+                  )}
                 </div>
-              ) : (
-                <Skeleton
-                  height="200px"
-                  aspectRatio="1/1"
-                  margin="16px 8px 0 0"
-                />
-              )}
-              <div style={{ width: "100%" }}>
-                {data ? (
-                  <TextField
-                    id="standard-basic"
-                    label="Name"
-                    variant="standard"
-                    defaultValue={data.data.username}
-                    margin="normal"
-                    fullWidth
-                    name="username"
-                    onChange={handleChange}
-                    variant="outlined"
-                    InputProps={{
-                      readOnly: readOnly.username,
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Button
-                            size="small"
-                            variant="contained"
-                            color={readOnly.username ? "secondary" : "info"}
-                            onClick={() => handleUpdate("username")}
-                          >
-                            {readOnly.username ? "Edit" : "Save"}
-                          </Button>
-                        </InputAdornment>
-                      ),
-                    }}
+                {updated && (
+                  <Snackbar
+                    open={updated}
+                    message="Updated successfully!"
+                    color="success"
+                    setOpen={setUpdated}
                   />
-                ) : (
-                  <Skeleton height="56px" width="100%" />
                 )}
-                <input
-                  name="imgUrl"
-                  onChange={handleChange}
-                  type="file"
-                  ref={imageInput}
-                  className="d-none"
-                  accept="image/png, .jpeg, .jpg, .jfif"
-                />
-                {data ? (
-                  <TextField
-                    fullWidth
-                    name="email"
-                    id="standard-basic"
-                    label="Email"
-                    variant="outlined"
-                    margin="normal"
-                    onChange={handleChange}
-                    defaultValue={data.data.email}
-                    InputProps={{
-                      readOnly: readOnly.email,
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Button
-                            size="small"
-                            variant="contained"
-                            color={readOnly.email ? "secondary" : "info"}
-                            onClick={() => handleUpdate("email")}
-                          >
-                            {readOnly.email ? "Edit" : "Save"}
-                          </Button>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                ) : (
-                  <Skeleton height="56px" width="100%" />
-                )}
-                {data ? (
-                  <TextField
-                    id="standard-basic"
-                    variant="outlined"
-                    name="password"
-                    label="Password"
-                    defaultValue="changepassword"
-                    margin="normal"
-                    onChange={handleChange}
-                    fullWidth
-                    InputProps={{
-                      readOnly: readOnly.password,
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Button
-                            size="small"
-                            variant="contained"
-                            color={readOnly.password ? "secondary" : "info"}
-                            onClick={() => handleUpdate("password")}
-                          >
-                            {readOnly.password ? "Edit" : "Save"}
-                          </Button>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                ) : (
-                  <Skeleton height="56px" width="100%" />
-                )}
+                {loading && <Backdrop loading={loading} />}
               </div>
-              {updated && (
-                <Snackbar
-                  open={updated}
-                  message="Updated successfully!"
+              <div className="flex space-between mt-16">
+                <Button
+                  variant="contained"
+                  disabled={info === null}
+                  color="info"
+                  onClick={() => {
+                    setInfo(null);
+                    setReadOnly({
+                      username: true,
+                      email: true,
+                      password: true,
+                    });
+                    setInitialData({
+                      username: data.data.username,
+                      email: data.data.email,
+                      email,
+                    });
+                  }}
+                >
+                  Discard Changes
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{ widht: "max-content" }}
                   color="success"
-                  setOpen={setUpdated}
-                />
-              )}
-              {loading && <Backdrop loading={loading} />}
+                  onClick={saveChangesToServer}
+                  disabled={info === null ? true : false}
+                >
+                  Save Changes
+                </Button>
+              </div>
             </div>
-            <div className="flex flex-end mt-16">
-              <Button
-                variant="contained"
-                sx={{ widht: "max-content" }}
-                color={localUser ? "danger" : "success"}
-                onClick={
-                  localUser
-                    ? handleLogout
-                    : () => {
-                        router.push("/auth");
-                      }
-                }
+          )}
+          {menu === "posts" && (
+            <>
+              <p id="aboutyou" className="title" style={{ margin: "0" }}>
+                Posts
+              </p>
+            </>
+          )}
+          {menu === "questions" && (
+            <div className="h-100">
+              <p
+                className="title"
+                style={{ margin: "0", maxHeight: "max-content" }}
               >
-                {localUser ? "Log out" : "Sign up"}
-              </Button>
+                Questions
+              </p>
+              {questions ? (
+                questions.length === 0 ? (
+                  <div className="h-100 grid grid-center">
+                    There is no questions yet
+                  </div>
+                ) : (
+                  <div className="grid grid-gap-8 mt-8">
+                    {questions.map((question, index) => (
+                      <Question key={index} question={question} mini={true} />
+                    ))}
+                  </div>
+                )
+              ) : (
+                <CircularProgress />
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+      {openHB && (
+        <div className={`${styles.tabletHornav} `}>
+          <div className={`${styles.fixed}`}>
+            <div className={`flex flex-column space-between h-100`}>
+              <List style={{ paddingTop: 0 }}>
+                <ListItem
+                  selected={menu === "information"}
+                  button
+                  onClick={() => {
+                    setMenu("information");
+                    setOpenHB(false);
+                  }}
+                >
+                  <ListItemText primary="Information" />
+                </ListItem>
+                <ListItem
+                  selected={menu === "questions"}
+                  button
+                  onClick={() => {
+                    handleMenu("questions"), setOpenHB(false);
+                  }}
+                >
+                  <ListItemText primary="My questions" />
+                </ListItem>
+                <ListItem
+                  selected={menu === "courses"}
+                  button
+                  onClick={() => {
+                    handleMenu("courses"), setOpenHB(false);
+                  }}
+                >
+                  <ListItemText primary="My courses" />
+                </ListItem>
+              </List>
+              <div className="p-16">
+                <Button
+                  variant="contained"
+                  fullWidth
+                  color={localUser ? "danger" : "success"}
+                  onClick={
+                    localUser
+                      ? handleLogout
+                      : () => {
+                          router.push("/auth");
+                        }
+                  }
+                >
+                  {localUser ? "Log out" : "Sign up"}
+                </Button>
+              </div>
             </div>
           </div>
-        )}
-        {menu === "posts" && (
-          <>
-            <p id="aboutyou" className="title" style={{ margin: "0" }}>
-              Posts
-            </p>
-          </>
-        )}
-        {menu === "questions" && (
-          <div className="h-100">
-            <p
-              className="title"
-              style={{ margin: "0", maxHeight: "max-content" }}
-            >
-              Questions
-            </p>
-            {questions ? (
-              questions.length === 0 ? (
-                <div className="h-100 grid grid-center">
-                  There is no questions yet
-                </div>
-              ) : (
-                <div className="grid grid-gap-8 mt-8">
-                  {questions.map((question, index) => (
-                    <Question key={index} question={question} mini={true} />
-                  ))}
-                </div>
-              )
-            ) : (
-              <CircularProgress />
-            )}
-          </div>
-        )}
-      </div>
+          <div
+            onClick={() => setOpenHB(!openHB)}
+            className="flex-1 h-100"
+          ></div>
+        </div>
+      )}
     </div>
   );
 }

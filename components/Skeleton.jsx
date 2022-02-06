@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "../styles/Skeleton.module.css";
 
 export default function Skeleton({
   aspectRatio,
@@ -7,13 +8,18 @@ export default function Skeleton({
   bgColor,
   margin,
 }) {
-  const styles = {
+  const skeleton = {
     height: height,
-    backgroundColor: bgColor ? bgColor : "#f2f4f7",
+    backgroundColor: bgColor ? bgColor : "#fff",
     width: width,
     margin: margin ? margin : "16px 0 8px 0",
     borderRadius: "8px",
     aspectRatio: aspectRatio,
   };
-  return <div style={styles}></div>;
+
+  return (
+    <div className={styles.skeleton} style={skeleton}>
+      <div className={styles.mover}></div>
+    </div>
+  );
 }

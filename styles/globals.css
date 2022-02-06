@@ -252,8 +252,11 @@ p {
 .py-24 {
   padding: 24px 0;
 }
+.p-16 {
+  padding: 16px;
+}
 .h-100 {
-  height: 100%;
+  min-height: 100%;
 }
 .blocktype {
   width: 200px !important;

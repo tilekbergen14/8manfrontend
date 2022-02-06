@@ -40,10 +40,10 @@ export default function Navbar({ profileImg }) {
       }
     }
   );
-  if (error) {
-    localStorage.clear();
-    router.push("/");
-  }
+  // if (error) {
+  //   localStorage.clear();
+  //   router.push("/");
+  // }
   return (
     <Box sx={{ flexGrow: 1 }} className={styles.stick}>
       <AppBar position="sticky" className={styles.appbar}>
