@@ -126,7 +126,7 @@ export default function questions(props) {
   );
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   try {
     const questions = await axios.get(`${process.env.server}/question`);
     return {

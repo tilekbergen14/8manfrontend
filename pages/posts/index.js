@@ -96,7 +96,7 @@ export default function posts(props) {
   );
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   try {
     const posts = await axios.get(`${process.env.server}/post?limit=20`);
     return {
