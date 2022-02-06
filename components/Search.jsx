@@ -7,6 +7,7 @@ export default function Search(props) {
   const [keyword, setKeyword] = useState(props.keyword ? props.keyword : "");
   const handleSearch = () => {
     if (props.setKeyword) {
+      props.setKeyword(keyword);
     } else {
       router.replace(`/search/${keyword}`);
     }
@@ -20,7 +21,7 @@ export default function Search(props) {
         type="text"
         value={keyword}
         onChange={(e) => {
-          setKeyword(e.target.value), props.setKeyword(e.target.value);
+          setKeyword(e.target.value);
         }}
       />
 

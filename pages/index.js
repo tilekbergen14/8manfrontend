@@ -18,7 +18,7 @@ export default function Home({ posts, questions }) {
         <div className={styles.openingText}>
           <h1 className={styles.bigText}>
             <span className={styles.learn}>Learn</span>
-            <span className={styles.teach}>Teach</span>
+            <span className={styles.teach}>Teach </span>
             <span className={styles.explore}>Explore with us!</span>
           </h1>
           <p className={styles.optSmall}>

@@ -39,7 +39,7 @@ export default function SearchResults(props) {
         <div className={`${styles.openingText} ${styles.spOpeningText}`}>
           <h1 className={styles.bigText}>
             <span className={styles.learn}>Learn</span>
-            <span className={styles.teach}>Teach</span>
+            <span className={styles.teach}>Teach </span>
             <span className={styles.explore}>Explore with us!</span>
           </h1>
           <p className={styles.optSmall}>
@@ -48,7 +48,7 @@ export default function SearchResults(props) {
           </p>
         </div>
         <div className={styles.searchBox}>
-          <Search value={props.keyword} />
+          <Search keyword={props.keyword} />
         </div>
       </div>
       <div className={styles.body}>
