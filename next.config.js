@@ -4,6 +4,6 @@ module.exports = {
     server: "https://eightman.kz/api",
   },
   images: {
-    domains: ["localhost"],
+    domains: ["localhost", "eightman.kz"],
   },
 };
