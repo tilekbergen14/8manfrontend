@@ -1,7 +1,7 @@
 module.exports = {
   reactStrictMode: true,
   env: {
-    server: "http://localhost:5000",
+    server: "https://eightman/api",
   },
   images: {
     domains: ["localhost"],
