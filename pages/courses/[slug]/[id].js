@@ -69,7 +69,7 @@ export default function Course({ lesson, serie, series }) {
   return (
     <div className={styles.page}>
       <Head>
-        <title>{lesson.title}</title>
+        <title>{lesson.title}, Eightman.kz</title>
       </Head>
       <div className={`${styles.navbar2} flex align-center space-between`}>
         <MenuIcon

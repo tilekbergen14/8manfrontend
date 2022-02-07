@@ -118,7 +118,9 @@ export default function auth() {
   return (
     <div>
       <Head>
-        <title>Тіркелу, Кіру | Программалау, кодтау, онлайн мектеп</title>
+        <title>
+          Тіркелу, Кіру | Программалау, кодтау, онлайн мектеп, Eightman.kz
+        </title>
       </Head>
       <Grid
         container

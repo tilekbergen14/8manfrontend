@@ -37,6 +37,7 @@ export default function questions({ question }) {
   const [error, setError] = useState(null);
   const [answerAdded, setAnswerAdded] = useState(false);
   const [answerLength, setAnswerLength] = useState(question?.answers?.length);
+  const [openSnack, setOpenSnack] = useState(false);
   const [loading, setLoading] = useState(false);
   const blockType = ["Normal", "Blockquote", "Code"];
   const [answer, setAnswer] = useState({
@@ -94,7 +95,8 @@ export default function questions({ question }) {
         }
       }
       if (!user) {
-        console.log("please log in");
+        setError("Please log in!");
+        setOpenSnack(true);
       }
       setLoading(false);
     } catch (err) {
@@ -107,7 +109,7 @@ export default function questions({ question }) {
   return (
     <div className={styles.postsPage}>
       <Head>
-        <title>{question.title}</title>
+        <title>{question.title}, Eightman.kz</title>
       </Head>
       <div className={styles.first}>
         <Links />
@@ -141,39 +143,50 @@ export default function questions({ question }) {
             className={styles.body}
             dangerouslySetInnerHTML={{ __html: body }}
           ></div>
-          <div className="flex  mb-16 space-between align-center">
-            <EditIcon
-              size="small"
-              sx={{ color: "#757575" }}
-              className="hover c-pointer"
-              onClick={() => {
-                setQuestionEdit(true);
-              }}
-            />
-            {questionEdit && (
-              <EditQuestion
-                setAskquestion={setQuestionEdit}
-                setQuestionCreated={setQuestionEdited}
-                existedQuestion={question}
+          {user && user.id === question.author_id && (
+            <div className="flex  mb-16 space-between align-center">
+              <EditIcon
+                size="small"
+                sx={{ color: "#757575" }}
+                className="hover c-pointer"
+                onClick={() => {
+                  setQuestionEdit(true);
+                }}
               />
-            )}
-            {questionEdited && (
-              <Snackbar
-                setOpen={setQuestionEdited}
-                open={questionEdited}
-                message="Question edited successfully!"
-                color="success"
+
+              <Delete
+                wheredelete="question"
+                setDeleted={setQuestionDeleted}
+                id={question.id}
+                color="#757575"
+                questionDelete={true}
               />
-            )}
-            <Delete
-              wheredelete="question"
-              setDeleted={setQuestionDeleted}
-              id={question.id}
-              color="#757575"
-              questionDelete={true}
-            />
-          </div>
+            </div>
+          )}
         </div>
+        {questionEdit && (
+          <EditQuestion
+            setAskquestion={setQuestionEdit}
+            setQuestionCreated={setQuestionEdited}
+            existedQuestion={question}
+          />
+        )}
+        {questionEdited && (
+          <Snackbar
+            setOpen={setQuestionEdited}
+            open={questionEdited}
+            message="Question edited successfully!"
+            color="success"
+          />
+        )}
+        {openSnack && (
+          <Snackbar
+            setOpen={setOpenSnack}
+            open={openSnack}
+            message={error}
+            color="danger"
+          />
+        )}
         {answerLength === 0 ? (
           <p className={styles.blockquote}>
             There is no answers yet! Be first one to answer

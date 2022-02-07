@@ -16,7 +16,7 @@ export default function Home({ posts, questions }) {
   return (
     <div className={styles.homepage}>
       <Head>
-        <title>Басты бет | Программалау, кодтау</title>
+        <title>Басты бет | Программалау, кодтау, Eightman.kz</title>
       </Head>
       <div className={styles.header}>
         <div className={styles.openingText}>
@@ -46,15 +46,21 @@ export default function Home({ posts, questions }) {
       </div>
       <div className={styles.body}>
         <div className={styles.bodyRight}>
-          <h3 className="title">Posts</h3>
-          {posts && posts.map((post) => <Post post={post} key={post.id} />)}
-          <div className="flex flex-end align-center">
-            <Link href="posts">
-              <h3 className="title flex align-center c-pointer ">
-                See All <ArrowForwardIosIcon fontSize="14px" />
-              </h3>
-            </Link>
-          </div>
+          {posts.length > 0 && (
+            <>
+              <h3 className="title">Posts</h3>
+              {posts.map((post) => (
+                <Post post={post} key={post.id} />
+              ))}
+              <div className="flex flex-end align-center">
+                <Link href="posts">
+                  <h3 className="title flex align-center c-pointer ">
+                    See All <ArrowForwardIosIcon fontSize="14px" />
+                  </h3>
+                </Link>
+              </div>
+            </>
+          )}
           <h3 className="title">Questions</h3>
           {questions &&
             questions.map((question) => (

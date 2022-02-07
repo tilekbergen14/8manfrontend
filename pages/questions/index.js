@@ -53,7 +53,9 @@ export default function questions(props) {
   return (
     <div className={styles.postsPage}>
       <Head>
-        <title>Білмегеніңді сұра | Программалау, кодтау, онлайн мектеп</title>
+        <title>
+          Білмегеніңді сұра | Программалау, кодтау, онлайн мектеп, Eightman.kz
+        </title>
       </Head>
       {askquestion && (
         <QuestionModal

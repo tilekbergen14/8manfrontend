@@ -51,7 +51,9 @@ export default function posts(props) {
   return (
     <div className={styles.postsPage}>
       <Head>
-        <title>Постлар | Программалау, кодтау, онлайн мектеп</title>
+        <title>
+          Постлар | Программалау, кодтау, онлайн мектеп, Eightman.kz
+        </title>
       </Head>
       <div className={styles.first}>
         <Languages />

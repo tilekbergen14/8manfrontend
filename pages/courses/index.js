@@ -29,7 +29,9 @@ export default function index(props) {
   return (
     <div className={`${styles.body} container m-auto`}>
       <Head>
-        <title>Туториялдар | Программалау, кодтау, онлайн мектеп</title>
+        <title>
+          Туториялдар | Программалау, кодтау, онлайн мектеп Eightman.kz
+        </title>
       </Head>
       <div className="p-container">
         <div className="flex space-between align-center py-24">

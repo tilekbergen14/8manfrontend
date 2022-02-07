@@ -55,6 +55,8 @@
 }
 .editor {
   height: 300px;
+  max-width: 100%;
+  overflow: hidden;
 }
 .answer {
   background-color: #fff;

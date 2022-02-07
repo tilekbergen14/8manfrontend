@@ -14,7 +14,7 @@ export default function VerifyEmail({ user }) {
   return (
     <div className="flex flex-column justify-center align-center h-100">
       <Head>
-        <title>Программалау, кодтау, онлайн мектеп</title>
+        <title>Программалау, кодтау, онлайн мектеп, Eightman.kz</title>
       </Head>
       <p>Once we are verified you will be directed to the homepage!</p>
       <CircularProgress />

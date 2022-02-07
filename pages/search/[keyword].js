@@ -37,7 +37,7 @@ export default function SearchResults(props) {
   return (
     <div className={styles.homepage}>
       <Head>
-        <title>Іздеу | Программалау, кодтау </title>
+        <title>Іздеу | Программалау, кодтау , Eightman.kz</title>
       </Head>
       <div className={`${styles.header} ${styles.spHeader}`}>
         <div className={`${styles.openingText} ${styles.spOpeningText}`}>

@@ -62,7 +62,7 @@ export default function Post({ post }) {
   return (
     <div className={styles.postpage}>
       <Head>
-        <title>{post.title}</title>
+        <title>{post.title}, Eightman.kz</title>
       </Head>
       <div className={styles.waveBox}>
         <Image className={styles.wave} src={wave} layout="fill" />

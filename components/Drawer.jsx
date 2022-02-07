@@ -36,6 +36,11 @@ export default function TemporaryDrawer({ toggleDrawer, left, user }) {
             <ListItemText primary="Homepage" />
           </ListItem>
         </Link>
+        <Link href="/courses">
+          <ListItem button key="courses">
+            <ListItemText primary="Courses" />
+          </ListItem>
+        </Link>
         <Link href="/posts">
           <ListItem button key="posts">
             <ListItemText primary="Posts" />
@@ -44,11 +49,6 @@ export default function TemporaryDrawer({ toggleDrawer, left, user }) {
         <Link href="/questions">
           <ListItem button key="questions">
             <ListItemText primary="Ask Answer" />
-          </ListItem>
-        </Link>
-        <Link href="/aboutus">
-          <ListItem button key="aboutus">
-            <ListItemText primary="About Us" />
           </ListItem>
         </Link>
       </List>
