@@ -20,7 +20,7 @@ import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import MyEditor from "../../../components/Editor";
 import axios from "axios";
 import Backdrop from "../../../components/Backdrop";
-import Head from "next";
+import Head from "next/head";
 
 export default function Course({ lesson, serie, series }) {
   const router = useRouter();
@@ -70,7 +70,7 @@ export default function Course({ lesson, serie, series }) {
   return (
     <div className={styles.page}>
       <Head>
-        <title>{lesson.title}, Eightman.kz</title>
+        <title>Eightman.kz</title>
       </Head>
       <div className={styles.hornav}>
         <div className={`${styles.fixed}`}>
